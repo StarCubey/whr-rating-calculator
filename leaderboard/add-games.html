@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Calculator</title>
+    <link rel="stylesheet" href="styles/style.css">
+
+    <datalist id="player-list">
+    </datalist>
+</head>
+<body>
+    <p><a href="#" onclick="addGames.onBackButtonClick()">Back</a></p>
+    <p>
+        Match log:
+        <div class="scrollbox">No new match data.</div><br>
+        <a href="#">Copy last match</a>
+        <a href="#">Copy all matches</a>
+    </p>
+    <p>Match date (UTC): <input type="date" id="match-date"></p>
+    <p>
+        <select id ="game-mode" onchange="addGames.onGameModeChange()">
+            <option value="1v1">1v1</option>
+            <option value="Teams">Teams</option>
+            <option value="FFA">FFA</option>
+        </select>
+        <select id="is-score" onchange="addGames.onIsScoreChange()">
+            <option value="No score">No score</option>
+            <option value="Score">Score</option>
+        </select>
+    </p>
+    <div id="scores">
+        <p>Winner: <input type="text" id="player-1" list="player-list"></p>
+        <p>Loser: <input type="text" id="player-2" list="player-list"></p>
+    </div>
+    <p><a href="#" onclick="addGames.onAddGameButtonClick()">Add game</a></p>
+</body>
+</html>
