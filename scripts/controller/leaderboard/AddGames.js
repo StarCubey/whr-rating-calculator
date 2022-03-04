@@ -122,9 +122,66 @@ let addGames=new class AddGames{
     }
 
     onAddGameButtonClick(){
+        let scores=document.getElementById("scores");
+        let gameModeInput=document.getElementById("game-mode");
+        let isScoreInput=document.getElementById("is-score");
+        
+        let teams=[];
+        let oldRatings=[];
+        let newPlayers=[];
+        let hasDuplicate=false;
+        let hasBlank=false;
+        if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
+            let playerName;
+            let playerNum=1;
+            while(document.getElementById("player-"+playerNum)!==null){
+                playerName=document.getElementById("player-"+playerNum).value;
+
+                if(playerName===""){
+                    hasBlank=true;
+                    break;
+                }
+
+                if(newPlayers.find(x=>x.getName()===playerName)){
+                    hasDuplicate=true;
+                    break;
+                }
+
+                let player=this.players.find(x=>x.getName()===playerName);
+                if(player===undefined){
+                    player=index.ratingSystem.addPlayer(playerName);
+                    newPlayers.push(player);
+                }
+
+                teams.push([player]);
+                oldRatings.push([player.getRL()]);
+
+                playerNum++;
+            }
+        }
+        else if(gameModeInput==="Teams"){
+            //TODO
+        }
+        console.log(teams)//TODO debug
+
+        let error=hasBlank||hasDuplicate;
+        //if there's a duplicate, show an alert box
+        //else confirmation for adding new players (otherwise, error)
+        //if there is an error, new players are removed from index.ratingSystem
+        //once new players are confirmed, add them to this.players (done)
+        this.players=this.players.concat(newPlayers);
+
+        let playerList=document.getElementById("player-list");
+        newPlayers.forEach(player=>{
+            let option=document.createElement("option");
+            option.setAttribute("value", player.getName());
+            playerList.appendChild(option);
+        });
+
         //add the game
         //add to sessionMatchList
         //clear player names
+        this.#updateScoreInputBoxes();
     }
 
     #updateScoreInputBoxes(){
@@ -136,8 +193,8 @@ let addGames=new class AddGames{
 
         if(gameModeInput.value==="1v1"){
             if(isScoreInput.value==="No score"){
-                scores.innerHTML='<p>Winner: <input type="text" id="player-1"></p>'+
-                    '<p>Loser: <input type="text" id="player-2"></p>';
+                scores.innerHTML='<p>Winner: <input type="text" id="player-1" list="player-list"></p>'+
+                    '<p>Loser: <input type="text" id="player-2" list="player-list"></p>';
             }
             else if(isScoreInput.value==="Score"){
                 scores.innerHTML=
