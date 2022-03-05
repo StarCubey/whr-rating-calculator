@@ -1,6 +1,7 @@
 let addGames=new class AddGames{
     players;
     sessionMatchList="";
+    lastMatchString="";
 
     initialize(){
         this.players=index.ratingSystem.getPlayers();
@@ -43,7 +44,9 @@ let addGames=new class AddGames{
     addPlayer(isScore){
         let scores=document.getElementById("scores");
         let children=scores.children;
-        let addRemoveButtons="<p>"+children[children.length-1].innerHTML+"</p>";
+
+        let addRemoveButtons=document.createElement("p");
+        addRemoveButtons.innerHTML=children[children.length-1].innerHTML;
         
         if(!isScore){
             children[children.length-1].innerHTML='#'+children.length+' player: <input type="text" id="player-'+children.length+'" list="player-list">';
@@ -54,7 +57,7 @@ let addGames=new class AddGames{
                 'Score: <input type="number" id="player-'+children.length+'-score" value="0">';
         }
         
-        scores.innerHTML+=addRemoveButtons;
+        scores.appendChild(addRemoveButtons);
     }
 
     removePlayer(){
@@ -66,7 +69,9 @@ let addGames=new class AddGames{
     addTeam(isScore){
         let scores=document.getElementById("scores");
         let children=scores.children;
-        let addRemoveButtons="<p>"+children[children.length-1].innerHTML+"</p>";
+        
+        let addRemoveButtons=document.createElement("p");
+        addRemoveButtons.innerHTML=children[children.length-1].innerHTML;
 
         if(!isScore){
             children[children.length-1].innerHTML=
@@ -86,7 +91,7 @@ let addGames=new class AddGames{
                 '<a href="#team-'+children.length+'-add-player" onclick="addGames.removePlayerFromTeam('+children.length+', true)">Remove player</a>';
         }
 
-        scores.innerHTML+=addRemoveButtons;
+        scores.appendChild(addRemoveButtons);
     }
 
     removeTeam(){
@@ -98,6 +103,13 @@ let addGames=new class AddGames{
         let lines=teamP.innerHTML.split("<br>");
         let addRemoveButtons=lines[lines.length-1];
 
+        let playerNames=[];
+        let i=0;
+        while(document.getElementById("team-"+teamNum+"-player-"+(i+1))!==null){
+            playerNames[i]=document.getElementById("team-"+teamNum+"-player-"+(i+1)).value;
+            i++;
+        }
+
         if(!isScore){
             lines[lines.length-1]='Player '+(lines.length-1)+': <input type="text" id="team-'+teamNum+'-player-'+(lines.length-1)+'">';
         }
@@ -107,6 +119,10 @@ let addGames=new class AddGames{
 
         lines.push(addRemoveButtons);
         teamP.innerHTML=lines.join("<br>");
+
+        playerNames.forEach((playerName, i)=>{
+            document.getElementById("team-"+teamNum+"-player-"+(i+1)).value=playerName;
+        });
     }
 
     removePlayerFromTeam(teamNum, isScore){
@@ -114,10 +130,21 @@ let addGames=new class AddGames{
         let lines=teamP.innerHTML.split("<br>");
         let addRemoveButtons=lines[lines.length-1];
 
+        let playerNames=[];
+        let i=0;
+        while(document.getElementById("team-"+teamNum+"-player-"+(i+1))!==null){
+            playerNames[i]=document.getElementById("team-"+teamNum+"-player-"+(i+1)).value;
+            i++;
+        }
+        
         if((!isScore&&lines.length>3) || (isScore&&lines.length>4)){
             lines.pop();
             lines[lines.length-1]=addRemoveButtons;
             teamP.innerHTML=lines.join("<br>");
+        }
+
+        for(let i=0; i<playerNames.length-1; i++){
+            document.getElementById("team-"+teamNum+"-player-"+(i+1)).value=playerNames[i];
         }
     }
 
@@ -132,20 +159,17 @@ let addGames=new class AddGames{
         let hasDuplicate=false;
         let hasBlank=false;
         if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
-            let playerName;
             let playerNum=1;
             while(document.getElementById("player-"+playerNum)!==null){
-                playerName=document.getElementById("player-"+playerNum).value;
+                let playerName=document.getElementById("player-"+playerNum).value;
 
                 if(playerName===""){
                     hasBlank=true;
                     break;
                 }
 
-                if(newPlayers.find(x=>x.getName()===playerName)){
-                    hasDuplicate=true;
-                    break;
-                }
+                hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
+                if(hasDuplicate) break;
 
                 let player=this.players.find(x=>x.getName()===playerName);
                 if(player===undefined){
@@ -159,10 +183,39 @@ let addGames=new class AddGames{
                 playerNum++;
             }
         }
-        else if(gameModeInput==="Teams"){
-            //TODO
+        else if(gameModeInput.value==="Teams"){
+            let teamNum=1;
+            while(document.getElementById("team-"+teamNum+"-player-1")!==null){
+                let playerNum=1;
+                teams.push([]);
+                oldRatings.push([]);
+                while(document.getElementById("team-"+teamNum+"-player-"+playerNum)!==null){
+                    let playerName=document.getElementById("team-"+teamNum+"-player-"+playerNum).value;
+
+                    if(playerName===""){
+                        hasBlank=true;
+                        break;
+                    }
+
+                    hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
+                    if(hasDuplicate) break;
+
+                    let player=this.players.find(x=>x.getName()===playerName);
+                    if(player===undefined){
+                        player=index.ratingSystem.addPlayer(playerName);
+                        newPlayers.push(player);
+                    }
+
+                    teams[teamNum-1].push(player);
+                    oldRatings[teamNum-1].push(player.getRL());
+
+                    playerNum++;
+                }
+                if(hasDuplicate||hasBlank) break;
+                
+                teamNum++;
+            }
         }
-        console.log(teams)//TODO debug
 
         let error=hasBlank||hasDuplicate;
         //if there's a duplicate, show an alert box
@@ -179,7 +232,7 @@ let addGames=new class AddGames{
         });
 
         //add the game
-        //add to sessionMatchList
+        //add to sessionMatchList and update lastMatchString
         //clear player names
         this.#updateScoreInputBoxes();
     }
