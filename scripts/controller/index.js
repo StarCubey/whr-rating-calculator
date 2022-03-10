@@ -4,6 +4,9 @@ let index=new class Index{
 
     initialize(){
         this.ratingSystem=new RatingSystem();
+        this.ratingSystem.getConfig().partialIterationNum=10;
+        this.ratingSystem.getConfig().fullIterationNum=10;
+        this.ratingSystem.getConfig().daysBetweenFullIterations=1;
 
         window.onbeforeunload = function() {return true;};
 
@@ -94,9 +97,6 @@ scripts.forEach((dir, i)=>{
     let script = document.createElement("script");
     script.setAttribute("src", dir);
     document.body.appendChild(script);
-    if(i===scripts.length-1){
-        script.addEventListener("load", ()=>{
-            index.initialize();
-        });
-    }
 });
+
+//index.initialize() is in RatingSystem.js

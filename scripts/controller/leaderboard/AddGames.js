@@ -12,6 +12,8 @@ let addGames=new class AddGames{
             option.setAttribute("value", player.getName());
             playerList.appendChild(option);
         });
+
+        if(this.sessionMatchList!=="") document.getElementById("match-log").innerHTML=this.sessionMatchList;
         
         let today=new Date();
         let date=String(today.getUTCDate());
@@ -149,91 +151,83 @@ let addGames=new class AddGames{
     }
 
     onAddGameButtonClick(){
-        let scores=document.getElementById("scores");
+        let matchDate=new Date(document.getElementById("match-date").value);
         let gameModeInput=document.getElementById("game-mode");
         let isScoreInput=document.getElementById("is-score");
         
-        let teams=[];
-        let oldRatings=[];
-        let newPlayers=[];
-        let hasDuplicate=false;
-        let hasBlank=false;
-        if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
-            let playerNum=1;
-            while(document.getElementById("player-"+playerNum)!==null){
-                let playerName=document.getElementById("player-"+playerNum).value;
+        let teamsAndResults=this.#getTeamsAndResults();
+        if(teamsAndResults===undefined) return;
+        let teams=teamsAndResults.teams;
+        let oldRatings=teamsAndResults.oldRatings;
+        let results=teamsAndResults.results;
 
-                if(playerName===""){
-                    hasBlank=true;
-                    break;
+        let matchPlayers=[];
+        teams.forEach(team=>{
+            matchPlayers=matchPlayers.concat(team);
+        });
+
+        if(isScoreInput.value==="Score"){
+            index.ratingSystem.addGameWithScore(teams, results, matchDate);
+        }
+        else{
+            index.ratingSystem.addGameWithoutScore(teams, results, matchDate);
+        }
+        
+        index.ratingSystem.ratingUpdate(()=>{
+            whr.partialIteration(index.ratingSystem, matchPlayers, index.ratingSystem.getConfig().partialIterationNum);
+        });
+
+        let rlChangeStrings=[];
+        teams.forEach((team, teamNum)=>{
+            rlChangeStrings.push([]);
+            team.forEach((player, playerNum)=>{
+                if(player.getUntilRated()>0){
+                    let gameNumUntilRated=index.ratingSystem.getConfig().gameNumUntilRated;
+                    rlChangeStrings[teamNum].push("("+(gameNumUntilRated-player.getUntilRated())+"/"+gameNumUntilRated+" games until rated)");
                 }
-
-                hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
-                if(hasDuplicate) break;
-
-                let player=this.players.find(x=>x.getName()===playerName);
-                if(player===undefined){
-                    player=index.ratingSystem.addPlayer(playerName);
-                    newPlayers.push(player);
+                else{
+                    let oldRating=oldRatings[teamNum][playerNum];
+                    rlChangeStrings[teamNum].push("("+(oldRating===undefined?"unrated":Math.round(oldRating))+"→"+Math.round(player.getRL())+")");
                 }
+            });
+        });
 
-                teams.push([player]);
-                oldRatings.push([player.getRL()]);
-
-                playerNum++;
+        this.lastMatchString="";
+        if(gameModeInput.value==="1v1"){
+            if(isScoreInput.value==="No score"){
+                this.lastMatchString+=
+                    "Match #"+(index.ratingSystem.getGamesLength())+"\n"+
+                    "Winner: "+teams[0][0].getName()+" "+rlChangeStrings[0][0]+"\n"+
+                    "Loser: "+teams[1][0].getName()+" "+rlChangeStrings[1][0];
+            }
+            else if(isScoreInput.value==="Score"){
+                this.lastMatchString+=
+                    "Match #"+(index.ratingSystem.getGamesLength())+"\n"+
+                    teams[0][0].getName()+" "+rlChangeStrings[0][0]+" vs "+teams[1][0].getName()+" "+rlChangeStrings[1][0]+"\n"+
+                    results[0]+"-"+results[1];
             }
         }
         else if(gameModeInput.value==="Teams"){
-            let teamNum=1;
-            while(document.getElementById("team-"+teamNum+"-player-1")!==null){
-                let playerNum=1;
-                teams.push([]);
-                oldRatings.push([]);
-                while(document.getElementById("team-"+teamNum+"-player-"+playerNum)!==null){
-                    let playerName=document.getElementById("team-"+teamNum+"-player-"+playerNum).value;
-
-                    if(playerName===""){
-                        hasBlank=true;
-                        break;
-                    }
-
-                    hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
-                    if(hasDuplicate) break;
-
-                    let player=this.players.find(x=>x.getName()===playerName);
-                    if(player===undefined){
-                        player=index.ratingSystem.addPlayer(playerName);
-                        newPlayers.push(player);
-                    }
-
-                    teams[teamNum-1].push(player);
-                    oldRatings[teamNum-1].push(player.getRL());
-
-                    playerNum++;
-                }
-                if(hasDuplicate||hasBlank) break;
-                
-                teamNum++;
+            if(isScoreInput.value==="No score"){
+                //TODO
+            }
+            else if(isScoreInput.value==="Score"){
+                //TODO
             }
         }
+        else if(gameModeInput.value==="FFA"){
+            if(isScoreInput.value==="No score"){
+                //TODO
+            }
+            else if(isScoreInput.value==="Score"){
+                //TODO
+            }
+        }
+        
+        let matchStringHTML=this.lastMatchString.split("\n").join("<br>");
+        this.sessionMatchList=matchStringHTML+"<br><br>"+this.sessionMatchList;
+        document.getElementById("match-log").innerHTML=this.sessionMatchList;
 
-        let error=hasBlank||hasDuplicate;
-        //if there's a duplicate, show an alert box
-        //else confirmation for adding new players (otherwise, error)
-        //if there is an error, new players are removed from index.ratingSystem
-        //once new players are confirmed, add them to this.players (done)
-        this.players=this.players.concat(newPlayers);
-
-        let playerList=document.getElementById("player-list");
-        newPlayers.forEach(player=>{
-            let option=document.createElement("option");
-            option.setAttribute("value", player.getName());
-            playerList.appendChild(option);
-        });
-
-        //add the game
-        //add to sessionMatchList and update lastMatchString
-        //clear player names
         this.#updateScoreInputBoxes();
     }
 
@@ -333,5 +327,137 @@ let addGames=new class AddGames{
                     '</p>';
             }
         }
+    }
+
+    /**
+     * Gets teams, results, and old ratings. Old ratings is a 2d array if teams. Elements of oldRatings are undefined if the player is unrated or doesn't have a valid rating.
+     * Adds players to the rating system if necissary. Returns undefined if there is an error.
+     * @returns {{teams: [[Player]], oldRatings: [number], results: [number]}}
+     */
+    #getTeamsAndResults(){
+        let gameModeInput=document.getElementById("game-mode");
+        let isScoreInput=document.getElementById("is-score");
+        
+        let teams=[];
+        let oldRatings=[];
+        let newPlayers=[];
+        let hasDuplicate=false;
+        let hasBlank=false;
+        if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
+            let playerNum=1;
+            while(document.getElementById("player-"+playerNum)!==null){
+                let playerName=document.getElementById("player-"+playerNum).value;
+
+                if(playerName===""){
+                    hasBlank=true;
+                    break;
+                }
+
+                hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
+                if(hasDuplicate) break;
+
+                let player=this.players.find(x=>x.getName()===playerName);
+                if(player===undefined){
+                    player=index.ratingSystem.addPlayer(playerName);
+                    newPlayers.push(player);
+                }
+
+                teams.push([player]);
+                if(player.getUntilRated()===0) oldRatings.push([player.getRL()]);
+                else oldRatings.push([undefined]);
+
+                playerNum++;
+            }
+        }
+        else if(gameModeInput.value==="Teams"){
+            let teamNum=1;
+            while(document.getElementById("team-"+teamNum+"-player-1")!==null){
+                let playerNum=1;
+                teams.push([]);
+                oldRatings.push([]);
+                while(document.getElementById("team-"+teamNum+"-player-"+playerNum)!==null){
+                    let playerName=document.getElementById("team-"+teamNum+"-player-"+playerNum).value;
+
+                    if(playerName===""){
+                        hasBlank=true;
+                        break;
+                    }
+
+                    hasDuplicate=teams.find(x=>{return x.find(x=>x.getName()===playerName);})!==undefined;
+                    if(hasDuplicate) break;
+
+                    let player=this.players.find(x=>x.getName()===playerName);
+                    if(player===undefined){
+                        player=index.ratingSystem.addPlayer(playerName);
+                        newPlayers.push(player);
+                    }
+
+                    teams[teamNum-1].push(player);
+                    if(player.getUntilRated()===0) oldRatings.push([player.getRL()]);
+                    else oldRatings.push([undefined]);
+
+                    playerNum++;
+                }
+                if(hasDuplicate||hasBlank) break;
+                
+                teamNum++;
+            }
+        }
+
+        let results=[];
+        let hasNegative=false;
+        if(isScoreInput.value==="Score"){
+            if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
+                teams.forEach((_, teamNum)=>{
+                    let score=Number(document.getElementById("player-"+(teamNum+1)+"-score").value);
+
+                    if(score<0) hasNegative=true;
+
+                    results.push(score);
+                });
+            }
+            else if(gameModeInput.value==="Teams"){
+                teams.forEach((_, teamNum)=>{
+                    let score=Number(document.getElementById("team-"+(teamNum+1)+"-score").value);
+
+                    if(score<0) hasNegative=true;
+
+                    results.push(score);
+                });
+            }
+        }
+        else{
+            teams.forEach((_, teamNum)=>{
+                results.push(teamNum);
+            });
+        }
+
+        let error=hasBlank||hasDuplicate||hasNegative;
+
+        if(hasDuplicate) window.alert("Duplicate player names aren't allowed.");
+        if(hasNegative) window.alert("Negative scores aren't allowed");
+        
+        if(!error && newPlayers.length>0 && !window.confirm(newPlayers.length+" new player(s) will be added to the rating system. Are you sure you want to continue?")){
+            error=true;
+        }
+
+        if(error){
+            newPlayers.forEach(player=>{
+                index.ratingSystem.removePlayer(player);
+            });
+        }
+        else{
+            this.players=this.players.concat(newPlayers);
+
+            let playerList=document.getElementById("player-list");
+            newPlayers.forEach(player=>{
+                let option=document.createElement("option");
+                option.setAttribute("value", player.getName());
+                playerList.appendChild(option);
+            });
+        }
+
+        if(!error) return {teams: teams, oldRatings: oldRatings, results: results};
+        else return undefined;
     }
 }

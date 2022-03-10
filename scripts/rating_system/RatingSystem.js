@@ -77,7 +77,7 @@ class RatingSystem{
     /**
      * @returns {number} The number of ganes in the rating system.
      */
-     getGamesLength(){
+    getGamesLength(){
         return this.#data.games.ids.length;
     }
 
@@ -161,13 +161,18 @@ class RatingSystem{
     addGameWithScore(teams, results, date){
         date=date.setUTCHours(0, 0, 0, 0);
 
-        teams.forEach((team, teamIndex)=>{team.forEach((player, playerIndex)=>{
-            teams[teamIndex][playerIndex]=player.getId();
-        });});
+        let teamsIds=[];
+
+        teams.forEach((team, teamIndex)=>{
+            teamsIds.push([]);
+            team.forEach((player, playerIndex)=>{
+                teamsIds[teamIndex].push(player.getId());
+            });
+        });
 
         let game={
             date: date.valueOf(),
-            teams: teams,
+            teams: teamsIds,
             isScore: true,
             results: results
         };
@@ -185,13 +190,18 @@ class RatingSystem{
     addGameWithoutScore(teams, results, date){
         date=date.setUTCHours(0, 0, 0, 0);
 
-        teams.forEach((team, teamIndex)=>{team.forEach((player, playerIndex)=>{
-            teams[teamIndex][playerIndex]=player.getId();
-        });});
+        let teamsIds=[];
+
+        teams.forEach((team, teamIndex)=>{
+            teamsIds.push([]);
+            team.forEach((player, playerIndex)=>{
+                teamsIds[teamIndex].push(player.getId());
+            });
+        });
         
         let game={
             date: date.valueOf(),
-            teams: teams,
+            teams: teamsIds,
             isScore: false,
             results: results
         };
@@ -380,3 +390,5 @@ class RatingSystem{
         return new Game(this.#data, gameId);
     }
 }
+
+index.initialize();
