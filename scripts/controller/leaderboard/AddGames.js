@@ -21,6 +21,10 @@ let addGames=new class AddGames{
         let month=String(today.getUTCMonth()+1);
         if(month.length===1) month="0"+month;
         document.getElementById("match-date").value=today.getUTCFullYear()+"-"+month+"-"+date;
+
+        document.getElementById("game-mode").value=index.ratingSystem.getConfig().lastGameMode;
+        document.getElementById("is-score").value=index.ratingSystem.getConfig().lastScoreMode;
+        this.#updateScoreInputBoxes();
     }
 
     onBackButtonClick(){
@@ -35,12 +39,40 @@ let addGames=new class AddGames{
         xhttp.send();
     }
 
+    onCopyLastMatchButtonClick(){
+        let output=this.lastMatchString;
+        
+        if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
+            let escChars=["\\", "*", "_", "~", "`", ">"];
+            escChars.forEach(escChar=>{
+                output=output.split(escChar).join("\\"+escChar);
+            });
+        }
+        navigator.clipboard.writeText(output);
+    }
+
+    onCopyAllMatchesButtonClick(){
+        let output=this.sessionMatchList.split("<br>").join("\n");
+        
+        if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
+            let escChars=["\\", "*", "_", "~", "`", ">"];
+            escChars.forEach(escChar=>{
+                output=output.split(escChar).join("\\"+escChar);
+            });
+        }
+        navigator.clipboard.writeText(output);
+    }
+
     onGameModeChange(){
         this.#updateScoreInputBoxes();
+
+        index.ratingSystem.getConfig().lastGameMode=document.getElementById("game-mode").value;
     }
 
     onIsScoreChange(){
         this.#updateScoreInputBoxes();
+
+        index.ratingSystem.getConfig().lastScoreMode=document.getElementById("is-score").value;
     }
 
     addPlayer(isScore){
@@ -203,24 +235,49 @@ let addGames=new class AddGames{
             else if(isScoreInput.value==="Score"){
                 this.lastMatchString+=
                     "Match #"+(index.ratingSystem.getGamesLength())+"\n"+
-                    teams[0][0].getName()+" "+rlChangeStrings[0][0]+" vs "+teams[1][0].getName()+" "+rlChangeStrings[1][0]+"\n"+
-                    results[0]+"-"+results[1];
+                    teams[0][0].getName()+" "+rlChangeStrings[0][0]+" vs\n"+
+                    teams[1][0].getName()+" "+rlChangeStrings[1][0]+"\n"+
+                    results[0]+" - "+results[1];
             }
         }
         else if(gameModeInput.value==="Teams"){
             if(isScoreInput.value==="No score"){
-                //TODO
+                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                teams.forEach((team, teamNum)=>{
+                    this.lastMatchString+="#"+(teamNum+1)+" team\n";
+                    team.forEach((player, playerNum)=>{
+                        this.lastMatchString+=player.getName()+" "+rlChangeStrings[teamNum][playerNum]+"\n";
+                    });
+                });
+                this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
             else if(isScoreInput.value==="Score"){
-                //TODO
+                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                teams.forEach((team, teamNum)=>{
+                    this.lastMatchString+="Team "+(teamNum+1)+", Score: "+results[teamNum]+"\n";
+                    team.forEach((player, playerNum)=>{
+                        this.lastMatchString+=player.getName()+" "+rlChangeStrings[teamNum][playerNum]+"\n";
+                    });
+                });
+                this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
         }
         else if(gameModeInput.value==="FFA"){
             if(isScoreInput.value==="No score"){
-                //TODO
+                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                teams.forEach((team, teamNum)=>{
+                    this.lastMatchString+="#"+(teamNum+1)+": "+team[0].getName()+" "+rlChangeStrings[teamNum][0]+"\n";
+                });
+                this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
             else if(isScoreInput.value==="Score"){
-                //TODO
+                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                teams.forEach((team, teamNum)=>{
+                    this.lastMatchString+=
+                        team[0].getName()+" "+rlChangeStrings[teamNum][0]+"\n"+
+                        "Score: "+results[teamNum]+"\n";
+                });
+                this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
         }
         
@@ -330,7 +387,7 @@ let addGames=new class AddGames{
     }
 
     /**
-     * Gets teams, results, and old ratings. Old ratings is a 2d array if teams. Elements of oldRatings are undefined if the player is unrated or doesn't have a valid rating.
+     * Gets teams, results, and old ratings. Old ratings is a 2d array of ratings from each player on each team. Elements of oldRatings are undefined if the player is unrated or doesn't have a valid rating.
      * Adds players to the rating system if necissary. Returns undefined if there is an error.
      * @returns {{teams: [[Player]], oldRatings: [number], results: [number]}}
      */

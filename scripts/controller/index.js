@@ -4,9 +4,14 @@ let index=new class Index{
 
     initialize(){
         this.ratingSystem=new RatingSystem();
-        this.ratingSystem.getConfig().partialIterationNum=10;
-        this.ratingSystem.getConfig().fullIterationNum=10;
-        this.ratingSystem.getConfig().daysBetweenFullIterations=1;
+
+        let config=this.ratingSystem.getConfig();
+        config.partialIterationNum=10;
+        config.fullIterationNum=10;
+        config.daysBetweenFullIterations=1;
+        config.lastGameMode="1v1";
+        config.lastScoreMode="No score";
+        config.escapeDiscordMarkdown=true;
 
         window.onbeforeunload = function() {return true;};
 

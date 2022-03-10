@@ -59,7 +59,7 @@ input[type="number"]{
 
 div.scrollbox{
     width:20em;
-    height:10em;
+    height:15em;
     overflow-y:scroll;
     padding:.3em;
     background-color:#e6e6e6;
