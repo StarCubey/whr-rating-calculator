@@ -14,6 +14,11 @@ let viewLeaderboard=new class ViewLeaderboard{
         if(this.iterationLog!=""){
             document.getElementById("iteration-log").innerHTML=this.iterationLog;
         }
+
+        let lastFullIterationDate=index.ratingSystem.getConfig().lastFullIterationDate;
+        if(lastFullIterationDate!==-1){
+            document.getElementById("last-full-iteration").innerHTML="Date of last full iteration (UTC): "+new Date(lastFullIterationDate);
+        }
     }
 
     onBackButtonClick(){
@@ -48,6 +53,10 @@ let viewLeaderboard=new class ViewLeaderboard{
 
         this.#showLeaderboardData();
         this.#updateLbCopyStrings();
+
+        let lastFullIterationDate=Date.now();
+        index.ratingSystem.getConfig().lastFullIterationDate=lastFullIterationDate;
+        document.getElementById("last-full-iteration").innerHTML="Date of last full iteration (UTC): "+new Date(lastFullIterationDate).toUTCString();
     }
 
     onCopyLeaderboardButtonClick(stringNum){
@@ -116,12 +125,25 @@ let viewLeaderboard=new class ViewLeaderboard{
 
                 if(this.lbCopyStrings[i].length+append.length > index.ratingSystem.getConfig().characterLimit){
                     i++;
+                    this.lbCopyStrings.push("");
                 }
             }
 
             this.lbCopyStrings[i]+=append;
         });
 
-        //TODO update the html so that there are the correct number of buttons
+        if(this.lbCopyStrings.length===1){
+            document.getElementById("copy-string-buttons").innerHTML='<a href="#" onclick="viewLeaderboard.onCopyLeaderboardButtonClick(0)">Copy leaderboard</a>';
+        }
+        else{
+            let innerHTMLString="";
+            for(let i=0; i<this.lbCopyStrings.length; i++){
+                innerHTMLString+='<a href="#" onclick="viewLeaderboard.onCopyLeaderboardButtonClick('+i+')">Copy leaderboard '+(i+1)+'</a>';
+                if(i<this.lbCopyStrings.length-1){
+                    innerHTMLString+='<br>';
+                }
+            }
+            document.getElementById("copy-string-buttons").innerHTML=innerHTMLString;
+        }
     }
 }

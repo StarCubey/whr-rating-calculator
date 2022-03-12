@@ -224,16 +224,17 @@ let addGames=new class AddGames{
         });
 
         this.lastMatchString="";
+        let matchNum=index.ratingSystem.getGamesLength()+index.ratingSystem.getConfig().deletedGames;
         if(gameModeInput.value==="1v1"){
             if(isScoreInput.value==="No score"){
                 this.lastMatchString+=
-                    "Match #"+(index.ratingSystem.getGamesLength())+"\n"+
+                    "Match #"+matchNum+"\n"+
                     "Winner: "+teams[0][0].getName()+" "+rlChangeStrings[0][0]+"\n"+
                     "Loser: "+teams[1][0].getName()+" "+rlChangeStrings[1][0];
             }
             else if(isScoreInput.value==="Score"){
                 this.lastMatchString+=
-                    "Match #"+(index.ratingSystem.getGamesLength())+"\n"+
+                    "Match #"+matchNum+"\n"+
                     teams[0][0].getName()+" "+rlChangeStrings[0][0]+" vs\n"+
                     teams[1][0].getName()+" "+rlChangeStrings[1][0]+"\n"+
                     results[0]+" - "+results[1];
@@ -241,7 +242,7 @@ let addGames=new class AddGames{
         }
         else if(gameModeInput.value==="Teams"){
             if(isScoreInput.value==="No score"){
-                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                this.lastMatchString+="Match #"+matchNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     this.lastMatchString+="#"+(teamNum+1)+" team\n";
                     team.forEach((player, playerNum)=>{
@@ -251,7 +252,7 @@ let addGames=new class AddGames{
                 this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
             else if(isScoreInput.value==="Score"){
-                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                this.lastMatchString+="Match #"+matchNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     this.lastMatchString+="Team "+(teamNum+1)+", Score: "+results[teamNum]+"\n";
                     team.forEach((player, playerNum)=>{
@@ -263,14 +264,14 @@ let addGames=new class AddGames{
         }
         else if(gameModeInput.value==="FFA"){
             if(isScoreInput.value==="No score"){
-                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                this.lastMatchString+="Match #"+matchNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     this.lastMatchString+="#"+(teamNum+1)+": "+team[0].getName()+" "+rlChangeStrings[teamNum][0]+"\n";
                 });
                 this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
             else if(isScoreInput.value==="Score"){
-                this.lastMatchString+="Match #"+(index.ratingSystem.getGamesLength())+"\n";
+                this.lastMatchString+="Match #"+matchNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     this.lastMatchString+=
                         team[0].getName()+" "+rlChangeStrings[teamNum][0]+"\n"+

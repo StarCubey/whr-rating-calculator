@@ -12,6 +12,7 @@ let index=new class Index{
         config.lastScoreMode="No score";
         config.escapeDiscordMarkdown=true;
         config.characterLimit=2000;
+        config.lastFullIterationDate=-1;
 
         window.onbeforeunload = function() {return true;};
     }

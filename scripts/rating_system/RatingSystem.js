@@ -6,7 +6,7 @@ class RatingSystem{
         config: {
             seasonNum: 1,
             meanRating: 1500,
-            ratingScale: 400/Math.LN10,
+            ratingScale: 173.72,
             gameNumUntilRated: 5,
             ratedThreshold: 0.9,
             infiniteGames: false,
@@ -14,7 +14,8 @@ class RatingSystem{
             infinitePlayers: false,
             maximumNumOfPlayers: 1_000_000,
             prior: 1.2,
-            w: Math.sqrt(14)/400*Math.log(10)
+            w: 0.0215,
+            deletedGames: 0
         },
         players: {
             ids: [],
@@ -388,6 +389,7 @@ class RatingSystem{
         
         while(!this.#data.config.infiniteGames && games.ids.length>this.#data.config.maximumNumOfGames){
             this.removeGame(new Game(this.#data, games.ids[0]));
+            this.config.deletedGames++;
         }
 
         return new Game(this.#data, gameId);
