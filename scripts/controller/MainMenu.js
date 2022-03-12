@@ -22,8 +22,10 @@ let mainMenu=new class MainMenu{
     onUnloadButtonClick(){
         if(!window.confirm("Are you sure you want to unload leaderboard data? Save data may be lost.")) return;
 
-        index.ratingSystem=new RatingSystem();
         index.leaderboardName="untitled";
+        addGames.sessionMatchList="";
+        addGames.lastMatchString="";
+        viewLeaderboard.iterationLog="";
 
         let xhttp=new XMLHttpRequest();
         xhttp.onreadystatechange=function(){
@@ -49,7 +51,15 @@ let mainMenu=new class MainMenu{
     }
 
     onViewLeaderboardButtonClick(){
-        //TODO
+        let xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange=function(){
+            if (this.readyState==4 && this.status==200) {
+                document.documentElement.innerHTML=this.responseText;
+                viewLeaderboard.initialize();
+            }
+        };
+        xhttp.open("GET", "./leaderboard/view-leaderboard.html", true);
+        xhttp.send();
     }
 
     onViewMatchDataButtonClick(){

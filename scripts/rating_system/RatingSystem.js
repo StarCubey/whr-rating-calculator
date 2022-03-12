@@ -266,6 +266,9 @@ class RatingSystem{
                     return 1;
                 }
             }
+            else if(player2.getRL()===undefined || player2.getUntilRated()!==0){
+                return -1;
+            }
             else{
                 return player2.getRL()-player1.getRL();
             }
@@ -391,4 +394,5 @@ class RatingSystem{
     }
 }
 
+//lol
 index.initialize();

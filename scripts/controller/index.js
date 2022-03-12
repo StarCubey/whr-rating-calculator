@@ -7,37 +7,13 @@ let index=new class Index{
 
         let config=this.ratingSystem.getConfig();
         config.partialIterationNum=10;
-        config.fullIterationNum=10;
         config.daysBetweenFullIterations=1;
         config.lastGameMode="1v1";
         config.lastScoreMode="No score";
         config.escapeDiscordMarkdown=true;
+        config.characterLimit=2000;
 
         window.onbeforeunload = function() {return true;};
-
-        //TDOO DEBUG
-        /*
-        (async ()=>{
-            await new Promise(resolve=>{setTimeout(resolve, 500)});
-            let rs=new RatingSystem();
-            let p1=rs.addPlayer("tes");
-            let p2=rs.addPlayer("t");
-            rs.addGameWithoutScore([[p1], [p2]], [0, 1], new Date());
-            rs.addGameWithoutScore([[p1], [p2]], [0, 1], new Date(Date.now()+86_400_000));
-            rs.ratingUpdate(()=>{
-                for(let i=0; i<10; i++){
-                    whr.fullIteration(rs, 1);
-                    console.log("Log likelihood: "+whr.logLikelihood(rs));
-                }
-            });
-            console.log(rs.getPlayers()[0].getName());
-            console.log("rating: "+rs.getPlayers()[0].getRL());
-            console.log("RD: "+rs.getPlayers()[0].getSigmaL());
-            console.log(rs.getPlayers()[1].getName());
-            console.log("rating: "+rs.getPlayers()[1].getRL());
-            console.log("RD: "+rs.getPlayers()[1].getSigmaL());
-        })();
-        */
     }
 
     onCreateButtonClick(){
@@ -88,6 +64,7 @@ let index=new class Index{
 
 let scripts=[
     "scripts/controller/leaderboard/AddGames.js",
+    "scripts/controller/leaderboard/ViewLeaderboard.js",
     "scripts/controller/CreateLeaderboard.js",
     "scripts/controller/MainMenu.js",
     "scripts/rating_system/Game.js",

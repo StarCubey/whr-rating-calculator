@@ -2,6 +2,7 @@ let addGames=new class AddGames{
     players;
     sessionMatchList="";
     lastMatchString="";
+    escChars=["\\", "*", "_", "~", "`", ">", ":"];
 
     initialize(){
         this.players=index.ratingSystem.getPlayers();
@@ -43,8 +44,7 @@ let addGames=new class AddGames{
         let output=this.lastMatchString;
         
         if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
-            let escChars=["\\", "*", "_", "~", "`", ">"];
-            escChars.forEach(escChar=>{
+            this.escChars.forEach(escChar=>{
                 output=output.split(escChar).join("\\"+escChar);
             });
         }
@@ -55,8 +55,7 @@ let addGames=new class AddGames{
         let output=this.sessionMatchList.split("<br>").join("\n");
         
         if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
-            let escChars=["\\", "*", "_", "~", "`", ">"];
-            escChars.forEach(escChar=>{
+            this.escChars.forEach(escChar=>{
                 output=output.split(escChar).join("\\"+escChar);
             });
         }

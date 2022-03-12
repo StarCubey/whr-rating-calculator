@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Calculator</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <p><a href="#" onclick="viewLeaderboard.onBackButtonClick()">Back</a></p>
+    <p>
+        Iteration log:<br>
+        <div id="iteration-log" class="scrollbox">No iteration data.</div>
+    </p>
+    <p>
+        Iteration count: <input id="iteration-count" type="number" value="10">
+        <a href="#" onclick="viewLeaderboard.onRunIterationsButtonClick()">Run iterations</a>
+    </p><br>
+    <p><a href="#" onclick="viewLeaderboard.onCopyLeaderboardButtonClick(0)">Copy leaderboard</a></p>
+
+    <p id="leaderboard">No leaderboard data.</p>
+    <p>
+        <a href="#" onclick="viewLeaderboard.onShowMoreButtonClick()">Show more</a>
+        <a href="#" onclick="viewLeaderboard.onShowLessButtonClick()">Show less</a>
+    </p>
+</body>
+</html>
