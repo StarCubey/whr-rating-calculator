@@ -63,7 +63,15 @@ let mainMenu=new class MainMenu{
     }
 
     onViewMatchDataButtonClick(){
-        //TODO
+        let xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange=function(){
+            if (this.readyState==4 && this.status==200) {
+                document.documentElement.innerHTML=this.responseText;
+                viewMatchData.initialize();
+            }
+        };
+        xhttp.open("GET", "./leaderboard/view-match-data.html", true);
+        xhttp.send();
     }
 
     onSettingsButtonClick(){

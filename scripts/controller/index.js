@@ -66,6 +66,7 @@ let index=new class Index{
 let scripts=[
     "scripts/controller/leaderboard/AddGames.js",
     "scripts/controller/leaderboard/ViewLeaderboard.js",
+    "scripts/controller/leaderboard/ViewMatchData.js",
     "scripts/controller/CreateLeaderboard.js",
     "scripts/controller/MainMenu.js",
     "scripts/rating_system/Game.js",

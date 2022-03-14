@@ -64,8 +64,10 @@ let viewLeaderboard=new class ViewLeaderboard{
     }
 
     onShowMoreButtonClick(){
-        lbPlayerCount+=20;
-        this.#showLeaderboardData();
+        if(lbPlayerCount<this.players.length){
+            lbPlayerCount+=20;
+            this.#showLeaderboardData();
+        }
     }
 
     onShowLessButtonClick(){
