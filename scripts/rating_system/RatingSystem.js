@@ -219,7 +219,7 @@ class RatingSystem{
         let ratingDays=this.#data.ratingDays;
 
         game.getTeams().forEach(team=>{team.forEach(player=>{
-            let ratingDay=player.getRatingDays().find(x=>{return x.getDate()===game.getDate();});
+            let ratingDay=player.getRatingDays().find(x=>{return x.getDate().valueOf()===game.getDate().valueOf();});
             let ratingDayGames=ratingDay.getGames();
             let _index=ratingDayGames.findIndex(x=>{return x.getId()===game.getId()});
             ratingDays[ratingDay.getId()].games.splice(_index, 1);

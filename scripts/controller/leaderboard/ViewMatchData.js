@@ -22,7 +22,11 @@ let viewMatchData=new class ViewMatchData{
     }
 
     onDeleteMatchButtonClick(matchNum){
-        //TODO confirmation box, write in addGames.sessionMatchList
+        if(window.confirm("Are you sure you want to delete this match? This action can't be undone.")){
+            index.ratingSystem.removeGame(this.games[matchNum]);
+            this.games.splice(matchNum, 1);
+            this.#updateMatchData();
+        }
     }
 
     onShowMoreButtonClick(){
@@ -70,16 +74,17 @@ let viewMatchData=new class ViewMatchData{
             }
         }
 
+        let labelNum=matchNum+index.ratingSystem.getConfig().deletedGames+1;
         if(mode==="1v1"){
             if(game.getIsScore()===false){
                 output=
-                    "Match #"+(matchNum+1)+"\n"+
+                    "Match #"+labelNum+"\n"+
                     "Winner: "+teams[0][0].getName()+"\n"+
                     "Loser: "+teams[1][0].getName();
             }
             else{
                 output=
-                    "Match #"+(matchNum+1)+"\n"+
+                    "Match #"+labelNum+"\n"+
                     teams[0][0].getName()+" vs\n"+
                     teams[1][0].getName()+"\n"+
                     results[0]+" - "+results[1];
@@ -87,7 +92,7 @@ let viewMatchData=new class ViewMatchData{
         }
         else if(mode==="Teams"){
             if(game.getIsScore()===false){
-                output="Match #"+(matchNum+1)+"\n";
+                output="Match #"+labelNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     output+="#"+(teamNum+1)+" team\n";
                     team.forEach(player=>{
@@ -97,7 +102,7 @@ let viewMatchData=new class ViewMatchData{
                 output=output.substring(0, output.length-1);
             }
             else{
-                output="Match #"+(matchNum+1)+"\n";
+                output="Match #"+labelNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     output+="Team "+(teamNum+1)+", Score: "+results[teamNum]+"\n";
                     team.forEach(player=>{
@@ -109,14 +114,14 @@ let viewMatchData=new class ViewMatchData{
         }
         else if(mode==="FFA"){
             if(game.getIsScore()===false){
-                output="Match #"+(matchNum+1)+"\n";
+                output="Match #"+labelNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     output+="#"+(teamNum+1)+": "+team[0].getName()+"\n";
                 });
                 output=output.substring(0, output.length-1);
             }
             else{
-                output="Match #"+(matchNum+1)+"\n";
+                output="Match #"+labelNum+"\n";
                 teams.forEach((team, teamNum)=>{
                     output+=
                         team[0].getName()+"\n"+
@@ -131,9 +136,22 @@ let viewMatchData=new class ViewMatchData{
 
     #updateMatchData(){
         let gamesString="";
+        let date=null;
         for(let i=0; i<this.matchViewCount && i<this.games.length; i++){
-            //if the date is different, add the date. then add the match string with a delete button below.
-            gamesString+=this.getMatchString(this.games.length-1).split("\n").join("<br>")+"<br><br>";//TODO debug
+            let matchNum=this.games.length-1-i;
+            
+            if(date===null || date.valueOf()!==this.games[matchNum].getDate().valueOf()){
+                date=this.games[matchNum].getDate();
+                
+                let dateStringSplit=date.toUTCString().split(" ");
+                dateStringSplit.splice(4, 2);
+                let dateString=dateStringSplit.join(" ");
+
+                gamesString+=dateString+"<br><br>";
+            }
+            gamesString+=
+                this.getMatchString(matchNum).split('\n').join('<br>')+'<br>'+
+                '<a id="delete-'+(matchNum+1)+'" href="#delete-'+(matchNum+1)+'" onclick="viewMatchData.onDeleteMatchButtonClick('+matchNum+')">Delete match</a><br><br>';
         }
 
         if(gamesString!=="") document.getElementById("match-data").innerHTML=gamesString;
