@@ -39,19 +39,104 @@ let viewMatchData=new class ViewMatchData{
         }
     }
 
-    getMatchString(){
-        //TODO
-        //similar to addGames.onAddGameButtonClick() except no rating change, <br> for line breaks, and you have to figure out if a game is 1v1, FFA or teams based on the game data.
-        //use \n, then convert to <br> in #updateMatchData()
+    /**
+     * @param {number} matchNum 
+     * @returns {string}
+     */
+    getMatchString(matchNum){
+        let output="";
+
+        let game=this.games[matchNum];
+        let teams=game.getTeams();
+        let results=game.getResults();
+        let isTeams=false;
+        teams.forEach(team=>{
+            if(team.length>1){
+                isTeams=true;
+                return;
+            }
+        });
+
+        let mode="";
+        if(isTeams){
+            mode="Teams";
+        }
+        else{
+            if(teams.length>2){
+                mode="FFA";
+            }
+            else{
+                mode="1v1";
+            }
+        }
+
+        if(mode==="1v1"){
+            if(game.getIsScore()===false){
+                output=
+                    "Match #"+(matchNum+1)+"\n"+
+                    "Winner: "+teams[0][0].getName()+"\n"+
+                    "Loser: "+teams[1][0].getName();
+            }
+            else{
+                output=
+                    "Match #"+(matchNum+1)+"\n"+
+                    teams[0][0].getName()+" vs\n"+
+                    teams[1][0].getName()+"\n"+
+                    results[0]+" - "+results[1];
+            }
+        }
+        else if(mode==="Teams"){
+            if(game.getIsScore()===false){
+                output="Match #"+(matchNum+1)+"\n";
+                teams.forEach((team, teamNum)=>{
+                    output+="#"+(teamNum+1)+" team\n";
+                    team.forEach(player=>{
+                        output+=player.getName()+"\n";
+                    });
+                });
+                output=output.substring(0, output.length-1);
+            }
+            else{
+                output="Match #"+(matchNum+1)+"\n";
+                teams.forEach((team, teamNum)=>{
+                    output+="Team "+(teamNum+1)+", Score: "+results[teamNum]+"\n";
+                    team.forEach(player=>{
+                        output+=player.getName()+"\n";
+                    });
+                });
+                output=output.substring(0, output.length-1);
+            }
+        }
+        else if(mode==="FFA"){
+            if(game.getIsScore()===false){
+                output="Match #"+(matchNum+1)+"\n";
+                teams.forEach((team, teamNum)=>{
+                    output+="#"+(teamNum+1)+": "+team[0].getName()+"\n";
+                });
+                output=output.substring(0, output.length-1);
+            }
+            else{
+                output="Match #"+(matchNum+1)+"\n";
+                teams.forEach((team, teamNum)=>{
+                    output+=
+                        team[0].getName()+"\n"+
+                        "Score: "+results[teamNum]+"\n";
+                });
+                output=output.substring(0, output.length-1);
+            }
+        }
+
+        return output;
     }
 
     #updateMatchData(){
         let gamesString="";
         for(let i=0; i<this.matchViewCount && i<this.games.length; i++){
             //if the date is different, add the date. then add the match string with a delete button below.
+            gamesString+=this.getMatchString(this.games.length-1).split("\n").join("<br>")+"<br><br>";//TODO debug
         }
 
-        if(gameString!=="") document.getElementById("match-data").innerHTML=gamesString;
+        if(gamesString!=="") document.getElementById("match-data").innerHTML=gamesString;
         else document.getElementById("match-data").innerHTML="No match data.";
     }
 }
