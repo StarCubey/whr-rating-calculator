@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Calculator</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <p><a href="#" onclick="settings.onBackButtonClick()">Back</a></p><br>
+
+    <p><a href="#" onclick="settings.onNewSeasonButtonClick()">New Season</a></p><br>
+    
+    <p>Prior: <input type="number" id="prior"></p>
+    <p>w (natural rating per day): <input type="number" id="w"></p><br>
+
+    <p>Mean rating: <input type="number" id="mean-rating"></p>
+    <p>Rating scale: <input type="number" id="rating-scale"></p>
+    <p>Number of games until rated: <input type="number" id="until-rated"></p>
+    <p><input type="checkbox" id="full-iterations-for-each-game"> Run full iterations for each game</p>
+    <p>Iterations per game: <input type="number" id="iterations-per-game"></p><br>
+
+    <p><input type="checkbox" id="infinite-games" onclick="settings.onInfiniteGamesCheckboxClick()"> Infinite games</p>
+    <p>Maximum number of games: <input type="number" id="maximum-number-of-games"></p>
+    <p><input type="checkbox" id="infinite-players" onclick="settings.onInfinitePlayersCheckboxClick()"> Infinite players</p>
+    <p>Maximum number of players: <input type="number" id="maximum-number-of-players"></p><br>
+
+    <p>Copy/paste character limit: <input type="number" id="character-limit"></p>
+    <p><input type="checkbox" id="escape-discord-markdown"> Escape discord markdon for copy/paste data</p><br>
+
+    <p><a href="#" onclick="settings.onApplySettingsButtonClick()">Apply settings</a></p>
+    <p><a href="#" onclick="settings.restore()">Restore to current settings</a></p>
+</body>

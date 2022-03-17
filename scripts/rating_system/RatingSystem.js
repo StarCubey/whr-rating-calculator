@@ -8,7 +8,7 @@ class RatingSystem{
             meanRating: 1500,
             ratingScale: 173.72,
             gameNumUntilRated: 5,
-            ratedThreshold: 0.9,
+            ratedThreshold: 1,
             infiniteGames: false,
             maximumNumOfGames: 1_000_000,
             infinitePlayers: false,
@@ -317,6 +317,13 @@ class RatingSystem{
         games[gameId]=game;
         games.ids.push(gameId);
         games.nextId++;
+
+        let gameIndex=games.ids.length-1;
+        while(gameIndex>0 && games[gameId].date<games[games.ids[gameIndex-1]].date){
+            games.ids[gameIndex]=games.ids[gameIndex-1];
+            games.ids[gameIndex-1]=gameId;
+            gameIndex--;
+        }
         
         game.teamsRatingDays=[];
         game.teams.forEach((team, teamIndex)=>{

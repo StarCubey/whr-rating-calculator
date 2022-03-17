@@ -6,8 +6,8 @@ let index=new class Index{
         this.ratingSystem=new RatingSystem();
 
         let config=this.ratingSystem.getConfig();
-        config.partialIterationNum=10;
-        config.daysBetweenFullIterations=1;
+        config.partialIterationNum=10;//TODO probably rename
+        config.fullIterationsForEachDay=false;//TODO needs to be implemented
         config.lastGameMode="1v1";
         config.lastScoreMode="No score";
         config.escapeDiscordMarkdown=true;
@@ -65,6 +65,7 @@ let index=new class Index{
 
 let scripts=[
     "scripts/controller/leaderboard/AddGames.js",
+    "scripts/controller/leaderboard/Settings.js",
     "scripts/controller/leaderboard/ViewLeaderboard.js",
     "scripts/controller/leaderboard/ViewMatchData.js",
     "scripts/controller/CreateLeaderboard.js",

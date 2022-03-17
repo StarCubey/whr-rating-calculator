@@ -75,6 +75,14 @@ let mainMenu=new class MainMenu{
     }
 
     onSettingsButtonClick(){
-        //TODO
+        let xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange=function(){
+            if (this.readyState==4 && this.status==200) {
+                document.documentElement.innerHTML=this.responseText;
+                settings.initialize();
+            }
+        };
+        xhttp.open("GET", "./leaderboard/settings.html", true);
+        xhttp.send();
     }
 }
