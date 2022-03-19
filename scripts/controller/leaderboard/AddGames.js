@@ -205,7 +205,12 @@ let addGames=new class AddGames{
         }
         
         index.ratingSystem.ratingUpdate(()=>{
-            whr.partialIteration(index.ratingSystem, matchPlayers, index.ratingSystem.getConfig().partialIterationNum);
+            if(!index.ratingSystem.getConfig().fullIterationsForEachGame){
+                whr.partialIteration(index.ratingSystem, matchPlayers, index.ratingSystem.getConfig().iterationNum);
+            }
+            else{
+                whr.fullIteration(index.ratingSystem, index.ratingSystem.getConfig().iterationNum);
+            }
         });
 
         let rlChangeStrings=[];

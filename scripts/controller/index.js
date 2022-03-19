@@ -6,8 +6,8 @@ let index=new class Index{
         this.ratingSystem=new RatingSystem();
 
         let config=this.ratingSystem.getConfig();
-        config.partialIterationNum=10;//TODO probably rename
-        config.fullIterationsForEachDay=false;//TODO needs to be implemented
+        config.iterationNum=10;
+        config.fullIterationsForEachGame=false;
         config.lastGameMode="1v1";
         config.lastScoreMode="No score";
         config.escapeDiscordMarkdown=true;
