@@ -17,7 +17,7 @@ let viewLeaderboard=new class ViewLeaderboard{
 
         let lastFullIterationDate=index.ratingSystem.getConfig().lastFullIterationDate;
         if(lastFullIterationDate!==-1){
-            document.getElementById("last-full-iteration").innerHTML="Date of last full iteration (UTC): "+new Date(lastFullIterationDate);
+            document.getElementById("last-full-iteration").innerHTML="Date of last full iteration: "+new Date(lastFullIterationDate).toDateString();
         }
     }
 
@@ -44,6 +44,7 @@ let viewLeaderboard=new class ViewLeaderboard{
             whr.logLikelihood(index.ratingSystem)+"<br>";
 
         index.ratingSystem.ratingUpdate(()=>{whr.fullIteration(index.ratingSystem, iterationCount);});
+        this.players=index.ratingSystem.getPlayers();
 
         iterationString+="Final log likelihood: <br>"+whr.logLikelihood(index.ratingSystem)+"<br><br>";
 
@@ -56,7 +57,7 @@ let viewLeaderboard=new class ViewLeaderboard{
 
         let lastFullIterationDate=Date.now();
         index.ratingSystem.getConfig().lastFullIterationDate=lastFullIterationDate;
-        document.getElementById("last-full-iteration").innerHTML="Date of last full iteration (UTC): "+new Date(lastFullIterationDate).toUTCString();
+        document.getElementById("last-full-iteration").innerHTML="Date of last full iteration: "+new Date(lastFullIterationDate).toDateString();
     }
 
     onCopyLeaderboardButtonClick(stringNum){

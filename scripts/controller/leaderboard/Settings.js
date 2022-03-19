@@ -37,7 +37,7 @@ let settings=new class Settings{
             }
 
             let w=document.getElementById("w").value;
-            if(w!=="" && Number(w)>=0){
+            if(w!=="" && Number(w)>0){
                 index.ratingSystem.getConfig().w=Number(w);
             }
 
@@ -70,13 +70,6 @@ let settings=new class Settings{
                 index.ratingSystem.getConfig().maximumNumOfGames=Math.ceil(Number(maximumNumOfGames));
             }
 
-            index.ratingSystem.getConfig().infinitePlayers=document.getElementById("infinite-players").checked;
-
-            let maximumNumOfPlayers=document.getElementById("maximum-number-of-players").value;
-            if(maximumNumOfPlayers!=="" && Number(maximumNumOfPlayers)>0){
-                index.ratingSystem.getConfig().maximumNumOfPlayers=Math.ceil(Number(maximumNumOfPlayers));
-            }
-
             let characterLimit=document.getElementById("character-limit").value;
             if(characterLimit!=="" && Number(characterLimit)>0){
                 index.ratingSystem.getConfig().characterLimit=Math.ceil(Number(characterLimit));
@@ -103,12 +96,6 @@ let settings=new class Settings{
         document.getElementById("maximum-number-of-games").disabled=infiniteGames;
 
         document.getElementById("maximum-number-of-games").value=index.ratingSystem.getConfig().maximumNumOfGames;
-
-        let infinitePlayers=index.ratingSystem.getConfig().infinitePlayers;
-        document.getElementById("infinite-players").checked=infinitePlayers;
-        document.getElementById("maximum-number-of-players").disabled=infinitePlayers;
-
-        document.getElementById("maximum-number-of-players").value=index.ratingSystem.getConfig().maximumNumOfPlayers;
         
         document.getElementById("character-limit").value=index.ratingSystem.getConfig().characterLimit;
         document.getElementById("escape-discord-markdown").checked=index.ratingSystem.getConfig().escapeDiscordMarkdown;

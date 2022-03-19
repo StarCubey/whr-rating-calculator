@@ -85,3 +85,16 @@ scripts.forEach((dir, i)=>{
 });
 
 //index.initialize() is in RatingSystem.js
+
+/*script for genereating test data
+for(let i=0; i<20; i++){
+	index.ratingSystem.addPlayer(i+"");
+}
+let players=index.ratingSystem.getPlayers();
+for(let i=0; i<1000; i++){
+	let p1=Math.floor(Math.random()*20);
+	let p2=p1;
+	while(p2===p1) p2=Math.floor(Math.random()*20);
+	index.ratingSystem.addGameWithoutScore([[players[p1]], [players[p2]]], [0, 1], new Date())
+}
+*/

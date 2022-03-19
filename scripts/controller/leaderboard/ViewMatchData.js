@@ -27,7 +27,7 @@ let viewMatchData=new class ViewMatchData{
             this.games.splice(matchNum, 1);
             this.#updateMatchData();
 
-            addGames.sessionMatchList="Match "+(matchNum+1)+" was deleted.<br><br>"+addGames.sessionMatchList;
+            addGames.sessionMatchList="Match "+(matchNum+index.ratingSystem.getConfig().deletedGames+1)+" was deleted.<br><br>"+addGames.sessionMatchList;
         }
     }
 

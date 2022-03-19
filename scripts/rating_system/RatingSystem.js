@@ -10,9 +10,7 @@ class RatingSystem{
             gameNumUntilRated: 5,
             ratedThreshold: 1,
             infiniteGames: false,
-            maximumNumOfGames: 1_000_000,
-            infinitePlayers: false,
-            maximumNumOfPlayers: 1_000_000,
+            maximumNumOfGames: 10_000,
             prior: 1.2,
             w: 0.0215,
             deletedGames: 0
@@ -108,18 +106,6 @@ class RatingSystem{
         let playerId=players.nextId;
         players.ids.push(playerId);
         players.nextId++;
-
-        while(!this.#data.config.infinitePlayers && players.ids.length>this.#data.config.maximumNumOfPlayers){
-            let highestDeviation=new Player(this.#data, players.ids[0]);
-            for(let playerIndex=1; playerIndex<players.ids.length; playerIndex++){
-                let player=new Player(this.#data, players.ids[playerIndex]);
-                if(player.getSigma()!=undefined && (highestDeviation.getSigma()===undefined || player.getSigma()>highestDeviation.getSigma())){
-                    highestDeviation=player;
-                }
-            }
-
-            this.removePlayer(new Player(this.#data, highestDeviation.getId()));
-        }
 
         return new Player(this.#data, playerId);
     }
@@ -231,6 +217,10 @@ class RatingSystem{
                 let playerObj=players[player.getId()];
                 let playerRatingDayIdIndex=playerObj.ratingDays.findIndex(x=>{return x===ratingDay.getId();});
                 playerObj.ratingDays.splice(playerRatingDayIdIndex, 1);
+
+                if(player.getRatingDays().length===0){
+                    this.removePlayer(player);
+                }
             }
         });});
 
@@ -396,7 +386,7 @@ class RatingSystem{
         
         while(!this.#data.config.infiniteGames && games.ids.length>this.#data.config.maximumNumOfGames){
             this.removeGame(new Game(this.#data, games.ids[0]));
-            this.config.deletedGames++;
+            this.#data.config.deletedGames++;
         }
 
         return new Game(this.#data, gameId);
