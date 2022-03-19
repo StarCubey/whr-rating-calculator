@@ -468,12 +468,14 @@ let addGames=new class AddGames{
 
         let results=[];
         let hasNegative=false;
+        let allZero=isScoreInput.value==="Score";
         if(isScoreInput.value==="Score"){
             if(gameModeInput.value==="1v1" || gameModeInput.value==="FFA"){
                 teams.forEach((_, teamNum)=>{
                     let score=Number(document.getElementById("player-"+(teamNum+1)+"-score").value);
 
                     if(score<0) hasNegative=true;
+                    if(score>0) allZero=false;
 
                     results.push(score);
                 });
@@ -483,6 +485,7 @@ let addGames=new class AddGames{
                     let score=Number(document.getElementById("team-"+(teamNum+1)+"-score").value);
 
                     if(score<0) hasNegative=true;
+                    if(score>0) allZero=false;
 
                     results.push(score);
                 });
@@ -494,10 +497,12 @@ let addGames=new class AddGames{
             });
         }
 
-        let error=hasBlank||hasDuplicate||hasNegative;
+        let error=hasBlank||hasDuplicate||hasNegative||allZero;
 
+        if(hasBlank) window.alert("Error: Blank player name.");
         if(hasDuplicate) window.alert("Duplicate player names aren't allowed.");
-        if(hasNegative) window.alert("Negative scores aren't allowed");
+        if(hasNegative && !hasBlank) window.alert("Negative scores aren't allowed");
+        if(allZero && !hasBlank) window.alert("Error: All scores are set to 0.");
         
         if(!error && newPlayers.length>0 && !window.confirm(newPlayers.length+" new player(s) will be added to the rating system. Are you sure you want to continue?")){
             error=true;
