@@ -65,15 +65,15 @@ let viewLeaderboard=new class ViewLeaderboard{
     }
 
     onShowMoreButtonClick(){
-        if(lbPlayerCount<this.players.length){
-            lbPlayerCount+=20;
+        if(this.lbPlayerCount<this.players.length){
+            this.lbPlayerCount+=20;
             this.#showLeaderboardData();
         }
     }
 
     onShowLessButtonClick(){
-        if(lbPlayerCount>20){
-            lbPlayerCount-=20;
+        if(this.lbPlayerCount>20){
+            this.lbPlayerCount-=20;
             this.#showLeaderboardData();
         }
     }
