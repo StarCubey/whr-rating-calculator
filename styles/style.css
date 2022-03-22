@@ -18,6 +18,10 @@ h2{
     font-weight:bold;
 }
 
+strong{
+    font-weight: bold;
+}
+
 body{
     margin:1em 20%;
 }

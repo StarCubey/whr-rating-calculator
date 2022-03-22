@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard Calculator</title>
     <link rel="stylesheet" href="styles/style.css">
+
+    <datalist id="player-list">
+    </datalist>
 </head>
 <body>
     <p><a href="#" onclick="viewLeaderboard.onBackButtonClick()">Back</a></p>
@@ -18,6 +21,10 @@
     </p>
     <p id="last-full-iteration">Date of last full iteration: N/A</p><br>
     
+    <p>Old name: <input type="text" id="old-name" list="player-list"></p>
+    <p>New name: <input type="text" id="new-name"></p>
+    <p><a href="#" onclick="viewLeaderboard.onRenamePlayerPressed()">Rename player</a></p><br>
+
     <p id="copy-string-buttons"><a href="#" onclick="viewLeaderboard.onCopyLeaderboardButtonClick(0)">Copy leaderboard</a></p>
     <p id="leaderboard">No leaderboard data.</p>
     <p>

@@ -278,6 +278,20 @@ class RatingSystem{
     }
 
     /**
+     * @param {number} maximumNumOfGames 
+     */
+    updateMaxGameNum(maximumNumOfGames){
+        let games=this.#data.games;
+        
+        this.#data.config.maximumNumOfGames=maximumNumOfGames;
+        
+        while(!this.#data.config.infiniteGames && games.ids.length>this.#data.config.maximumNumOfGames){
+            this.removeGame(new Game(this.#data, games.ids[0]));
+            this.#data.config.deletedGames++;
+        }
+    }
+
+    /**
      * Adds a game to the leaderboard, adds the match to the player's rating day, 
      * and removes a match if the match limit is exceeded.
      * @param {game object}

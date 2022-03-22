@@ -67,7 +67,7 @@ let settings=new class Settings{
 
             let maximumNumOfGames=document.getElementById("maximum-number-of-games").value;
             if(maximumNumOfGames!=="" && Number(maximumNumOfGames)>0){
-                index.ratingSystem.getConfig().maximumNumOfGames=Math.ceil(Number(maximumNumOfGames));
+                index.ratingSystem.updateMaxGameNum(Math.ceil(Number(maximumNumOfGames)));
             }
 
             let characterLimit=document.getElementById("character-limit").value;

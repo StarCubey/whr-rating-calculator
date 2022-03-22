@@ -11,6 +11,13 @@ let viewLeaderboard=new class ViewLeaderboard{
         this.#showLeaderboardData();
         this.#updateLbCopyStrings();
 
+        let playerList=document.getElementById("player-list");
+        this.players.forEach(player=>{
+            let option=document.createElement("option");
+            option.setAttribute("value", player.getName());
+            playerList.appendChild(option);
+        });
+        
         if(this.iterationLog!=""){
             document.getElementById("iteration-log").innerHTML=this.iterationLog;
         }
@@ -58,6 +65,34 @@ let viewLeaderboard=new class ViewLeaderboard{
         let lastFullIterationDate=Date.now();
         index.ratingSystem.getConfig().lastFullIterationDate=lastFullIterationDate;
         document.getElementById("last-full-iteration").innerHTML="Date of last full iteration: "+new Date(lastFullIterationDate).toDateString();
+    }
+
+    onRenamePlayerPressed(){
+        let oldName=document.getElementById("old-name").value;
+        let newName=document.getElementById("new-name").value;
+        let player=this.players.find(x=>x.getName()===oldName);
+
+        if(newName===""){
+            window.alert("Error: New name blank.");
+            return;
+        }
+        
+        if(player===undefined){
+            window.alert("Player not found.");
+            return;
+        }
+
+        if(this.players.find(x=>x.getName()===newName)!==undefined){
+            window.alert("Error: Name taken.");
+            return;
+        }
+
+        player.setName(newName);
+
+        this.#showLeaderboardData();
+        this.#updateLbCopyStrings();
+
+        window.alert("Name changed.");
     }
 
     onCopyLeaderboardButtonClick(stringNum){

@@ -149,7 +149,7 @@ let viewMatchData=new class ViewMatchData{
                 dateStringSplit.splice(4, 2);
                 let dateString=dateStringSplit.join(" ");
 
-                gamesString+=dateString+"<br><br>";
+                gamesString+="<strong>"+dateString+"</strong><br><br>";
             }
             gamesString+=
                 this.getMatchString(matchNum).split('\n').join('<br>')+'<br>'+
