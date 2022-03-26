@@ -223,7 +223,13 @@ let addGames=new class AddGames{
                 }
                 else{
                     let oldRating=oldRatings[teamNum][playerNum];
-                    rlChangeStrings[teamNum].push("("+(oldRating===undefined?"unrated":Math.round(oldRating))+"→"+Math.round(player.getRL())+")");
+                    if(oldRating===undefined){
+                        rlChangeStrings[teamNum].push("(unrated→"+Math.round(player.getRL())+")");
+                    }
+                    else{
+                        let ratingDifference=Math.round(player.getRL())-Math.round(oldRating);
+                        rlChangeStrings[teamNum].push("("+Math.round(oldRating)+"→"+Math.round(player.getRL())+", "+(ratingDifference>=0?"+":"")+ratingDifference+")");
+                    }
                 }
             });
         });
