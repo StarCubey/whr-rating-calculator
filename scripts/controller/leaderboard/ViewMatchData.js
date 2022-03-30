@@ -23,9 +23,24 @@ let viewMatchData=new class ViewMatchData{
 
     onDeleteMatchButtonClick(matchNum){
         if(window.confirm("Are you sure you want to delete this match? This action can't be undone.")){
+            let teams=this.games[matchNum].getTeams();
+            let matchPlayers=[];
+            teams.forEach(team=>{
+                matchPlayers=matchPlayers.concat(team);
+            });
+            
             index.ratingSystem.removeGame(this.games[matchNum]);
             this.games.splice(matchNum, 1);
             this.#updateMatchData();
+
+            index.ratingSystem.ratingUpdate(()=>{
+                if(!index.ratingSystem.getConfig().fullIterationsForEachGame){
+                    whr.partialIteration(index.ratingSystem, matchPlayers, index.ratingSystem.getConfig().iterationNum);
+                }
+                else{
+                    whr.fullIteration(index.ratingSystem, index.ratingSystem.getConfig().iterationNum);
+                }
+            });
 
             addGames.sessionMatchList="Match "+(matchNum+index.ratingSystem.getConfig().deletedGames+1)+" was deleted.<br><br>"+addGames.sessionMatchList;
         }
