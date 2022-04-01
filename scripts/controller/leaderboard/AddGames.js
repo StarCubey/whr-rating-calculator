@@ -462,7 +462,7 @@ let addGames=new class AddGames{
 
                     teams[teamNum-1].push(player);
                     if(player.getUntilRated()===0) oldRatings[teamNum-1].push(player.getRL());
-                    else oldRatings.push([undefined]);
+                    else oldRatings[teamNum-1].push(undefined);
 
                     playerNum++;
                 }
