@@ -144,10 +144,10 @@ let addGames=new class AddGames{
         }
 
         if(!isScore){
-            lines[lines.length-1]='Player '+(lines.length-1)+': <input type="text" id="team-'+teamNum+'-player-'+(lines.length-1)+'">';
+            lines[lines.length-1]='Player '+(lines.length-1)+': <input type="text" id="team-'+teamNum+'-player-'+(lines.length-1)+'" list="player-list">';
         }
         else{
-            lines[lines.length-1]='Player '+(lines.length-2)+': <input type="text" id="team-'+teamNum+'-player-'+(lines.length-2)+'">';
+            lines[lines.length-1]='Player '+(lines.length-2)+': <input type="text" id="team-'+teamNum+'-player-'+(lines.length-2)+'" list="player-list">';
         }
 
         lines.push(addRemoveButtons);
