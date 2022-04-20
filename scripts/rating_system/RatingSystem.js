@@ -205,12 +205,19 @@ class RatingSystem{
         let ratingDays=this.#data.ratingDays;
 
         game.getTeams().forEach(team=>{team.forEach(player=>{
-            let ratingDay=player.getRatingDays().find(x=>{return x.getDate().valueOf()===game.getDate().valueOf();});
+            let playerRatingDays=player.getRatingDays();
+            let ratingDayIndex=playerRatingDays.findIndex(x=>{return x.getDate().valueOf()===game.getDate().valueOf();});
+            let ratingDay=playerRatingDays[ratingDayIndex];
+            let nextRatingDay=ratingDayIndex>=playerRatingDays.length-1 ? undefined : playerRatingDays[ratingDayIndex+1];
+
             let ratingDayGames=ratingDay.getGames();
             let _index=ratingDayGames.findIndex(x=>{return x.getId()===game.getId()});
             ratingDays[ratingDay.getId()].games.splice(_index, 1);
 
             if(ratingDayGames.length===1){
+                let hasPrior=ratingDays[ratingDay.getId()].hasPrior;
+                if(nextRatingDay!==undefined && !nextRatingDay.hasPrior()) nextRatingDay.setHasPrior(hasPrior);
+                
                 delete ratingDays[ratingDay.getId()];
                 let ratingDaysRatingDayIdIndex=ratingDays.ids.findIndex(x=>{return x===ratingDay.getId();});
                 ratingDays.ids.splice(ratingDaysRatingDayIdIndex, 1);

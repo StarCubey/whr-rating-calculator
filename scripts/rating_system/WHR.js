@@ -49,7 +49,9 @@ let whr=new class WHR{
                 }
 
                 player.getRatingDays().forEach((ratingDay, rdIndex)=>{
-                    ratingDay.setR(ratingDay.getR()-x[rdIndex]);
+                    if(Math.exp(ratingDay.getR()-x[rdIndex])<Infinity){
+                        ratingDay.setR(ratingDay.getR()-x[rdIndex]);
+                    }
                 });
 
                 if(i===count-1){
