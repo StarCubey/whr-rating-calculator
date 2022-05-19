@@ -7,7 +7,7 @@ let index=new class Index{
 
         let config=this.ratingSystem.getConfig();
         config.iterationNum=10;
-        config.fullIterationsForEachGame=false;
+        config.fullIterationsForEachGame=true;
         config.lastGameMode="1v1";
         config.lastScoreMode="No score";
         config.escapeDiscordMarkdown=true;
