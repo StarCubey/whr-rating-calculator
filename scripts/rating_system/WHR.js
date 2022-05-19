@@ -218,12 +218,14 @@ let whr=new class WHR{
                 }
                 else{
                     let remainingGamma=totalGamma;
+                    let exitLoop=false;
                     game.getResults().forEach((teamNum, teamIndex)=>{
+                        if(exitLoop || teamIndex===game.getResults().length-1) return;
                         if(teams[teamNum].find(x=>{return x.getId()===player.getId();})!==undefined){
                             gradient[rdIndex]+=1-teamGamma/remainingGamma;
-                            return;
+                            exitLoop=true;
                         }
-                        else if(teamIndex<game.getResults().length-1){
+                        else{
                             gradient[rdIndex]-=teamGamma/remainingGamma;
                         }
                         remainingGamma-=Math.exp(teamRs[teamNum]);
@@ -277,7 +279,7 @@ let whr=new class WHR{
                     team.forEach((teamPlayerRatingDay)=>{
                         teamRs[teamNum]+=teamPlayerRatingDay.getR();
                     });
-                    if(teams[teamNum].find(x=>{return x.getId()==player.getId();})!==undefined){
+                    if(teams[teamNum].find(x=>{return x.getId()===player.getId();})!==undefined){
                         teamGamma=Math.exp(teamRs[teamNum]);
                     }
                     else{
@@ -292,14 +294,16 @@ let whr=new class WHR{
                 }
                 else{
                     let remainingOpposingGamma=opposingGamma;
+                    let exitLoop=false;
                     game.getResults().forEach((teamNum, teamIndex)=>{
+                        if(exitLoop || teamIndex===game.getResults().length-1) return;
+                        
+                        hessianDiagonal[rdIndex]-=teamGamma*remainingOpposingGamma/Math.pow(teamGamma+remainingOpposingGamma, 2);
+                        
                         if(teams[teamNum].find(x=>{return x.getId()===player.getId();})!==undefined){
-                            hessianDiagonal[rdIndex]-=teamGamma*remainingOpposingGamma/Math.pow(teamGamma+remainingOpposingGamma, 2);
-                            return;
+                            exitLoop=true;
                         }
-                        else if(teamIndex<game.getResults().length-1){
-                            hessianDiagonal[rdIndex]-=teamGamma*remainingOpposingGamma/Math.pow(teamGamma+remainingOpposingGamma, 2);
-                        }
+
                         remainingOpposingGamma-=Math.exp(teamRs[teamNum]);
                     });
                 }

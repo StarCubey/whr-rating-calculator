@@ -33,6 +33,15 @@ let viewMatchData=new class ViewMatchData{
             this.games.splice(matchNum, 1);
             this.#updateMatchData();
 
+            matchPlayers.forEach((player, index)=>{
+                try{
+                    player.getName();
+                }
+                catch{
+                    matchPlayers.splice(index);
+                }
+            });
+
             index.ratingSystem.ratingUpdate(()=>{
                 if(!index.ratingSystem.getConfig().fullIterationsForEachGame){
                     whr.partialIteration(index.ratingSystem, matchPlayers, index.ratingSystem.getConfig().iterationNum);
