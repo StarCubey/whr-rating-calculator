@@ -52,6 +52,9 @@ let whr=new class WHR{
                     if(Math.exp(ratingDay.getR()-x[rdIndex])<Infinity){
                         ratingDay.setR(ratingDay.getR()-x[rdIndex]);
                     }
+                    else{
+                        ratingDay.setR(0);
+                    }
                 });
 
                 if(i===count-1){
