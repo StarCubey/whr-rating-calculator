@@ -1,6 +1,7 @@
 let addGames=new class AddGames{
     players;
     sessionMatchList="";
+    sessionCopyMatches="";
     lastMatchString="";
     escChars=["\\", "*", "_", "~", "`", ">", ":"];
 
@@ -52,7 +53,7 @@ let addGames=new class AddGames{
     }
 
     onCopyAllMatchesButtonClick(){
-        let output=this.sessionMatchList.split("<br>").join("\n");
+        let output=this.sessionCopyMatches;
         
         if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
             this.escChars.forEach(escChar=>{
@@ -60,6 +61,12 @@ let addGames=new class AddGames{
             });
         }
         navigator.clipboard.writeText(output);
+    }
+
+    onClearLogButtonClick(){
+        this.sessionCopyMatches="";
+        this.lastMatchString="";
+        document.getElementById("match-log").innerHTML="No new match data.";
     }
 
     onGameModeChange(){
@@ -292,6 +299,7 @@ let addGames=new class AddGames{
             }
         }
         
+        this.sessionCopyMatches+=this.lastMatchString+"\n\n";
         let matchStringHTML=this.lastMatchString.split("\n").join("<br>");
         this.sessionMatchList=matchStringHTML+"<br><br>"+this.sessionMatchList;
         document.getElementById("match-log").innerHTML=this.sessionMatchList;
