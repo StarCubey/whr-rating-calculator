@@ -308,6 +308,7 @@ let addGames=new class AddGames{
         document.getElementById("match-log").innerHTML=this.sessionMatchList;
 
         this.#updateScoreInputBoxes();
+        this.#displayActivePlayers();
     }
 
     #updateScoreInputBoxes(){
@@ -612,7 +613,8 @@ let addGames=new class AddGames{
         if(this.players.length===0) output="The player list is empty.";
 
         for(let i=0; i<this.activePlayers.length; i++){
-            output+=`#${i+1}: ${this.activePlayers[i].getName()} (${this.activePlayers[i].getRL().toFixed()}${this.activePlayers[i].getUntilRated() ? " if rated" : ""})<br>`;
+            output+=`#${i+1}: ${this.activePlayers[i].getName()} (${this.activePlayers[i].getRL().toFixed()}`+
+                `${this.activePlayers[i].getUntilRated() ? `, ${this.activePlayers[i].getUntilRated()} game(s) until rated` : ""})<br>`;
         }
 
         document.getElementById("active-list").innerHTML=output;
