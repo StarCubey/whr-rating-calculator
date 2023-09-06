@@ -34,6 +34,21 @@
         <p>Winner: <input type="text" id="player-1" list="player-list"></p>
         <p>Loser: <input type="text" id="player-2" list="player-list"></p>
     </div>
-    <p><a href="#" onclick="addGames.onAddGameButtonClick()">Add game</a></p>
+    <p><a href="#" onclick="addGames.onAddGameButtonClick()">Add game</a></p><br>
+    <div>
+        <p>
+            Player list:
+            <div id="active-list" class="scrollbox">
+                The player list is empty.
+            </div><br>
+        </p>
+        <p><input type="text" id="active-list-selection" list="player-list"><br></p>
+        <p>
+            <a href="#" onclick="addGames.addActivePlayer()">Add</a>
+            <a href="#" onclick="addGames.removeActivePlayer()">Remove</a>
+            <a href="#" onclick="addGames.clearActivePlayers()">Clear</a>
+        </p>
+    </div>
+    </p>
 </body>
 </html>
