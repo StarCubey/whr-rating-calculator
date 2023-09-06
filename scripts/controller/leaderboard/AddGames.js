@@ -3,6 +3,7 @@ let addGames=new class AddGames{
     sessionMatchList="";
     sessionCopyMatches="";
     lastMatchString="";
+    activePlayers=[];
     escChars=["\\", "*", "_", "~", "`", ">", ":"];
 
     initialize(){
@@ -27,6 +28,8 @@ let addGames=new class AddGames{
         document.getElementById("game-mode").value=index.ratingSystem.getConfig().lastGameMode;
         document.getElementById("is-score").value=index.ratingSystem.getConfig().lastScoreMode;
         this.#updateScoreInputBoxes();
+
+        this.#displayActivePlayers();
     }
 
     onBackButtonClick(){
@@ -406,6 +409,59 @@ let addGames=new class AddGames{
     }
 
     /**
+     * Adds the selected player to the active players list.
+     */
+    addActivePlayer(){
+        let playerName=document.getElementById("active-list-selection").value;
+
+        if(playerName===""){
+            window.alert("Error: Blank player name.");
+            return;
+        }
+
+        let player=this.players.find(x=>x.getName()===playerName);
+
+        if(player===undefined){
+            window.alert("Error: Player not found.");
+            return;
+        }
+
+        this.activePlayers.push(player);
+        this.#displayActivePlayers();
+    }
+
+    /**
+     * Removes the selected player from the active players list.
+     */
+    removeActivePlayer(){
+        let playerName=document.getElementById("active-list-selection").value;
+
+        if(playerName===""){
+            window.alert("Error: Blank player name.");
+            return;
+        }
+
+        let player=this.activePlayers.find(x=>x.getName()===playerName);
+
+        if(player===undefined){
+            window.alert("Error: Player not found.");
+            return;
+        }
+
+        let index=this.activePlayers.indexOf(player);
+        this.activePlayers.splice(index, 1);
+        this.#displayActivePlayers();
+    }
+
+    /**
+     * Clears the active players list.
+     */
+    clearActivePlayers(){
+        this.activePlayers=[];
+        this.#displayActivePlayers();
+    }
+
+    /**
      * Gets teams, results, and old ratings. Old ratings is a 2d array of ratings from each player on each team. Elements of oldRatings are undefined if the player is unrated or doesn't have a valid rating.
      * Adds players to the rating system if necissary. Returns undefined if there is an error.
      * @returns {{teams: [[Player]], oldRatings: [number], results: [number]}}
@@ -540,5 +596,25 @@ let addGames=new class AddGames{
 
         if(!error) return {teams: teams, oldRatings: oldRatings, results: results};
         else return undefined;
+    }
+
+    /**
+     * Displays players in activePlayers
+     */
+    #displayActivePlayers(){
+        this.activePlayers.sort((p1, p2)=>{
+            if(p1.getRL()===undefined || p2.getRL()===undefined) return 0;
+            return p2.getRL()-p1.getRL();
+        });
+
+        let output="";
+
+        if(this.players.length===0) output="The player list is empty.";
+
+        for(let i=0; i<this.activePlayers.length; i++){
+            output+=`#${i+1}: ${this.activePlayers[i].getName()} (${this.activePlayers[i].getRL().toFixed()}${this.activePlayers[i].getUntilRated() ? " if rated" : ""})<br>`;
+        }
+
+        document.getElementById("active-list").innerHTML=output;
     }
 }

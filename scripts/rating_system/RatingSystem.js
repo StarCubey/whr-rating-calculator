@@ -258,7 +258,18 @@ class RatingSystem{
             let player2=new Player(this.#data, playerId2);
             if(player1.getRL()===undefined || player1.getUntilRated()!==0){
                 if(player2.getRL()===undefined || player2.getUntilRated()!==0){
-                    return 0;
+                    if(player1.getRL()===undefined) return 1;
+                    else{
+                        if(player2.getRL()===undefined) return -1;
+                        else{
+                            if(player1.getUntilRated()!==player2.getUntilRated()){
+                                return player1.getUntilRated()-player2.getUntilRated();
+                            }
+                            else{
+                                return player2.getRL()-player1.getRL();
+                            }
+                        }
+                    }
                 }
                 else{
                     return 1;
