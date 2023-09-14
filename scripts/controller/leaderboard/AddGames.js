@@ -68,7 +68,7 @@ let addGames=new class AddGames{
 
     onClearLogButtonClick(){
         this.sessionCopyMatches="";
-        this.lastMatchString="";
+        this.sessionMatchList="";
         document.getElementById("match-log").innerHTML="No new match data.";
     }
 
