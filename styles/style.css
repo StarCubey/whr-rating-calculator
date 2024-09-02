@@ -1,75 +1,94 @@
-*{
-    margin:0;
-    font:normal 16px Arial, Helvetica, Sans-Serif;
+* {
+  margin: 0;
+  font:
+    normal 16px Arial,
+    Helvetica,
+    Sans-Serif;
 }
 
-p{
-    margin:1em 0;
-    line-height: 1.6em;
+p {
+  margin: 1em 0;
+  line-height: 1.6em;
 }
 
-h1{
-    font-size:30px;
-    font-weight:bold;
+h1 {
+  font-size: 30px;
+  font-weight: bold;
 }
 
-h2{
-    font-size:22px;
-    font-weight:bold;
+h2 {
+  font-size: 22px;
+  font-weight: bold;
 }
 
-strong{
-    font-weight: bold;
+strong {
+  font-weight: bold;
 }
 
-body{
-    margin:1em 20%;
+body {
+  margin: 1em 20%;
 }
 
-a{
-    padding:.3em;
-    background-color:#ccc;
-    color:#000;
-    text-decoration:none;
-    border-radius:.3em;
+a {
+  padding: 0.3em;
+  background-color: #ccc;
+  color: #000;
+  text-decoration: none;
+  border-radius: 0.3em;
 }
 
-a:hover{
-    background-color:#ddd;
+a:hover {
+  background-color: #ddd;
 }
 
-a:active{
-    background-color:#bbb;
+a:active {
+  background-color: #bbb;
 }
 
-input[type="text"],input[type="number"],
-input[type="date"],input[type="checkbox"],select{
-    border-style:solid;
-    border-radius:4px;
-    background-color: #fff;
-    border-color:#666;
-    line-height:1.3em;
-    outline:none;
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="checkbox"],
+select {
+  border-style: solid;
+  border-radius: 4px;
+  background-color: #fff;
+  border-color: #666;
+  line-height: 1.3em;
+  outline: none;
 }
 
-input[type="text"][disabled],input[type="number"][disabled],
-input[type="date"][disabled]{
-    background-color: #ddd;
+input[type="text"][disabled],
+input[type="number"][disabled],
+input[type="date"][disabled] {
+  background-color: #ddd;
 }
 
-input[type="text"]:focus,input[type="number"]:focus,
-input[type="date"]:focus,select:focus{
-    border-color:#999;
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border-color: #999;
 }
 
-input[type="number"]{
-    width:5em;
+input[type="number"] {
+  width: 5em;
 }
 
-div.scrollbox{
-    width:20em;
-    height:15em;
-    overflow-y:scroll;
-    padding:.3em;
-    background-color:#e6e6e6;
+div.scrollbox {
+  width: 20em;
+  height: 15em;
+  overflow-y: scroll;
+  padding: 0.3em;
+  background-color: #e6e6e6;
+}
+
+textarea {
+  width: 20em;
+  height: 3em;
+  padding: 0.3em;
+  background-color: #e6e6e6;
+  resize: vertical;
+  border: none;
+  outline: none;
 }
