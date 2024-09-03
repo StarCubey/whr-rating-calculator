@@ -157,6 +157,10 @@ let viewMatchData=new class ViewMatchData{
             }
         }
 
+        let gameComments=game.getGameComments();
+        if(gameComments&&gameComments!=="")
+                output+="\n"+gameComments;
+
         return output;
     }
 
