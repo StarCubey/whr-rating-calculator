@@ -143,9 +143,10 @@ class RatingSystem{
      * @param {[[Player]]} teams A list of teams of players.
      * @param {[number]} results The score of each team.
      * @param {Date} date The time of the match.
+     * @param {string} gameComments Additional information about the match.
      * @returns {Game} The game that was added to the rating system.
      */
-    addGameWithScore(teams, results, date){
+    addGameWithScore(teams, results, date, gameComments){
         date=date.setUTCHours(0, 0, 0, 0);
 
         let teamsIds=[];
@@ -161,7 +162,8 @@ class RatingSystem{
             date: date.valueOf(),
             teams: teamsIds,
             isScore: true,
-            results: results
+            results: results,
+            gameComments: gameComments
         };
         return this.#addGame(game);
     }
@@ -172,9 +174,10 @@ class RatingSystem{
      * @param {[[Player]]} teams A list of teams of players.
      * @param {[number]} results A list of team indexes sorted based on placement where the best team is first.
      * @param {Date} date The time of the match.
+     * @param {string} gameComments Additional information about the match.
      * @returns {Game} The game that was added to the rating system.
      */
-    addGameWithoutScore(teams, results, date){
+    addGameWithoutScore(teams, results, date, gameComments){
         date=date.setUTCHours(0, 0, 0, 0);
 
         let teamsIds=[];
@@ -190,7 +193,8 @@ class RatingSystem{
             date: date.valueOf(),
             teams: teamsIds,
             isScore: false,
-            results: results
+            results: results,
+            gameComments: gameComments
         };
         return this.#addGame(game);
     }

@@ -19,6 +19,13 @@ class Game{
     }
 
     /**
+     * @returns {string|undefined}
+     */
+    getGameComments(){
+        return this.#data.games[this.#id].gameComments;
+    }
+
+    /**
      * @returns {[[Player]]}
      */
     getTeams(){

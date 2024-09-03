@@ -4,7 +4,7 @@ let addGames=new class AddGames{
     sessionCopyMatches="";
     lastMatchString="";
     activePlayers=[];
-    escChars=["\\", "*", "_", "~", "`", ">", ":"];
+    escChars=["\\", "*", "_", "~", "`", ">", ":", "#", "-"];
 
     initialize(){
         this.players=index.ratingSystem.getPlayers();
@@ -195,6 +195,7 @@ let addGames=new class AddGames{
         let matchDate=new Date(document.getElementById("match-date").value);
         let gameModeInput=document.getElementById("game-mode");
         let isScoreInput=document.getElementById("is-score");
+        let matchComment=document.getElementById("match-comment").value;
         
         let teamsAndResults=this.#getTeamsAndResults();
         if(teamsAndResults===undefined) return;
@@ -208,10 +209,10 @@ let addGames=new class AddGames{
         });
 
         if(isScoreInput.value==="Score"){
-            index.ratingSystem.addGameWithScore(teams, results, matchDate);
+            index.ratingSystem.addGameWithScore(teams, results, matchDate, matchComment);
         }
         else{
-            index.ratingSystem.addGameWithoutScore(teams, results, matchDate);
+            index.ratingSystem.addGameWithoutScore(teams, results, matchDate, matchComment);
         }
         
         index.ratingSystem.ratingUpdate(()=>{
@@ -301,6 +302,9 @@ let addGames=new class AddGames{
                 this.lastMatchString=this.lastMatchString.substring(0, this.lastMatchString.length-1);
             }
         }
+
+        if(matchComment && matchComment!=="")
+            this.lastMatchString+="\n"+matchComment;
         
         this.sessionCopyMatches+=this.lastMatchString+"\n\n";
         let matchStringHTML=this.lastMatchString.split("\n").join("<br>");
