@@ -201,6 +201,8 @@ let addGames=new class AddGames{
         if(teamsAndResults===undefined) return;
         let teams=teamsAndResults.teams;
         let oldRatings=teamsAndResults.oldRatings;
+        let oldRatingGroups=teamsAndResults.oldRatingGroups;
+        let oldRatingGroupMinGames=teamsAndResults.oldRatingGroupMinGames;
         let results=teamsAndResults.results;
 
         let matchPlayers=[];
@@ -234,12 +236,53 @@ let addGames=new class AddGames{
                 }
                 else{
                     let oldRating=oldRatings[teamNum][playerNum];
-                    if(oldRating===undefined){
-                        rlChangeStrings[teamNum].push("(unrated→"+Math.round(player.getRL())+")");
+                    if(!index.ratingSystem.getConfig().enableRatingGroups){
+                        if(oldRating===undefined){
+                            rlChangeStrings[teamNum].push("(Unrated→"+Math.round(player.getRL())+")");
+                        }
+                        else{
+                            let ratingDifference=Math.round(player.getRL())-Math.round(oldRating);
+                            rlChangeStrings[teamNum].push("("+Math.round(oldRating)+"→"+Math.round(player.getRL())+", "+(ratingDifference>=0?"+":"")+ratingDifference+")");
+                        }
                     }
                     else{
-                        let ratingDifference=Math.round(player.getRL())-Math.round(oldRating);
-                        rlChangeStrings[teamNum].push("("+Math.round(oldRating)+"→"+Math.round(player.getRL())+", "+(ratingDifference>=0?"+":"")+ratingDifference+")");
+                        let groupMinRatings=index.ratingSystem.getConfig().groupMinRatings;
+                        let meanRating=index.ratingSystem.getConfig().meanRating;
+                        let ratingScale=index.ratingSystem.getConfig().ratingScale;
+                        let oldPlayerMinGames=oldRatingGroupMinGames[teamNum][playerNum];
+
+                        let ratingGroup=player.getRatingGroup();
+                        let ratingGroupName=index.ratingSystem.getConfig().ratingGroups[ratingGroup];
+                        let oldRatingGroup=oldRatingGroups[teamNum][playerNum];
+                        let oldRatingGroupName=index.ratingSystem.getConfig().ratingGroups[oldRatingGroup];
+                        let ratingGroupIgnore=player.getRatingGroupIgnoreMinGames();
+                        let ratingGroupIgnoreName=index.ratingSystem.getConfig().ratingGroups[ratingGroupIgnore];
+
+                        let rlChangeString="("+Math.round(player.getRL());
+                        if(oldRating===undefined){
+                            rlChangeString+=", Unrated→"+ratingGroupName;
+                        }
+                        else{
+                            let ratingDifference=Math.round(player.getRL())-Math.round(oldRating);
+                            rlChangeString+=", "+(ratingDifference>=0?"+":"")+ratingDifference+", ";
+
+                            if(ratingGroup!==oldRatingGroup)
+                                rlChangeString+=oldRatingGroupName+"→"+ratingGroupName;
+                            else
+                                rlChangeString+=ratingGroupName;
+                        }
+                        if(ratingGroupIgnore!==ratingGroup){
+                            rlChangeString+="*";
+
+                            if(ratingGroupIgnore>0 && oldRating<(groupMinRatings[ratingGroupIgnore-1]*ratingScale)+meanRating ||
+                                player.getGroupMinGames()[ratingGroupIgnore-1]<oldPlayerMinGames[ratingGroupIgnore-1]){
+
+                                let {games, total}=player.getGamesUntilEligible();
+                                rlChangeString+=" "+games+"/"+total+" "+ratingGroupIgnoreName+" games";
+                            }
+                        }
+                        rlChangeString+=")";
+                        rlChangeStrings[teamNum].push(rlChangeString);
                     }
                 }
             });
@@ -468,8 +511,9 @@ let addGames=new class AddGames{
 
     /**
      * Gets teams, results, and old ratings. Old ratings is a 2d array of ratings from each player on each team. Elements of oldRatings are undefined if the player is unrated or doesn't have a valid rating.
+     * Similarly, oldRatingGroups and oldRatingGroupMinGames contains old rating group information. these arrays are empty if rating groups aren't enabled.
      * Adds players to the rating system if necissary. Returns undefined if there is an error.
-     * @returns {{teams: [[Player]], oldRatings: [number], results: [number]}}
+     * @returns {{teams: [[Player]], oldRatings: [[number]], oldRatingGroups[[number]], oldRatingGroupMinGames[[number]], results: [number]}}
      */
     #getTeamsAndResults(){
         let gameModeInput=document.getElementById("game-mode");
@@ -477,6 +521,8 @@ let addGames=new class AddGames{
         
         let teams=[];
         let oldRatings=[];
+        let oldRatingGroups=[];
+        let oldRatingGroupMinGames=[];
         let newPlayers=[];
         let hasDuplicate=false;
         let hasBlank=false;
@@ -502,16 +548,25 @@ let addGames=new class AddGames{
                 teams.push([player]);
                 if(player.getUntilRated()===0) oldRatings.push([player.getRL()]);
                 else oldRatings.push([undefined]);
+                if(index.ratingSystem.getConfig().enableRatingGroups){
+                    oldRatingGroups.push([player.getRatingGroup()]);
+                    oldRatingGroupMinGames.push([[...player.getGroupMinGames()]]);
+                }
 
                 playerNum++;
             }
         }
         else if(gameModeInput.value==="Teams"){
+            let enableRatingGroups=index.ratingSystem.getConfig().enableRatingGroups;
             let teamNum=1;
             while(document.getElementById("team-"+teamNum+"-player-1")!==null){
                 let playerNum=1;
                 teams.push([]);
                 oldRatings.push([]);
+                if(enableRatingGroups){
+                    oldRatingGroups.push([]);
+                    oldRatingGroupMinGames.push([]);
+                }
                 while(document.getElementById("team-"+teamNum+"-player-"+playerNum)!==null){
                     let playerName=document.getElementById("team-"+teamNum+"-player-"+playerNum).value;
 
@@ -532,6 +587,10 @@ let addGames=new class AddGames{
                     teams[teamNum-1].push(player);
                     if(player.getUntilRated()===0) oldRatings[teamNum-1].push(player.getRL());
                     else oldRatings[teamNum-1].push(undefined);
+                    if(enableRatingGroups){
+                        oldRatingGroups[teamNum-1].push(player.getRatingGroup());
+                        oldRatingGroupMinGames[teamNum-1].push([...player.getGroupMinGames()]);
+                    }
 
                     playerNum++;
                 }
@@ -599,7 +658,7 @@ let addGames=new class AddGames{
             });
         }
 
-        if(!error) return {teams: teams, oldRatings: oldRatings, results: results};
+        if(!error) return {teams: teams, oldRatings: oldRatings, oldRatingGroups: oldRatingGroups, oldRatingGroupMinGames: oldRatingGroupMinGames, results: results};
         else return undefined;
     }
 

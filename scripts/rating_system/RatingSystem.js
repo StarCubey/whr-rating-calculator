@@ -294,6 +294,7 @@ class RatingSystem{
     startNewSeason(){
         this.getPlayers().forEach(player=>{
             player.setUntilRated(this.#data.config.gameNumUntilRated);
+            player.setGroupMinGames([...this.#data.config.groupMinGames]);
         });
 
         this.#data.config.seasonNum++;
@@ -417,6 +418,13 @@ class RatingSystem{
                 else if(player.getUntilRated()===-1 && player.getSigma()<=threshold){
                     player.setUntilRated(0);
                 }
+
+                if(index.ratingSystem.getConfig().enableRatingGroups){
+                    let groupDiff=this.#getGroupDifficulty(player, gameInstance.getTeams());
+                    let groupMinGames=player.getGroupMinGames();
+                    for(let i=0; i<groupDiff; i++)
+                        groupMinGames[i]=groupMinGames[i]>0 ? groupMinGames[i]-1 : 0;
+                }
             });
         });
         
@@ -426,6 +434,31 @@ class RatingSystem{
         }
 
         return new Game(this.#data, gameId);
+    }
+
+    /**
+     * @param {Player} player 
+     * @param {[[Player]]} teams
+     * @returns The group difficulty of the match based on the highest
+     * rating player that the given player played against.
+     */
+    #getGroupDifficulty(player, teams){
+        let highest=-Infinity;
+
+        teams.forEach((team, i)=>{
+            if(team.find(x=>x.getId()===player.getId())!==undefined) return;
+
+            team.forEach(otherPlayer=>{
+                let rating=otherPlayer.getR();
+                if(rating>highest) highest=rating;
+            });
+        });
+
+        let groupDiff=0;
+        let groupMinRatings=index.ratingSystem.getConfig().groupMinRatings;
+        while(groupDiff<groupMinRatings.length && highest>groupMinRatings[groupDiff]) groupDiff++;
+
+        return groupDiff;
     }
 }
 
