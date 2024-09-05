@@ -25,6 +25,10 @@
     <p>Copy/paste character limit: <input type="number" id="character-limit"></p>
     <p><input type="checkbox" id="escape-discord-markdown"> Escape discord markdon for copy/paste data</p><br>
 
-    <p><a href="#" onclick="settings.onApplySettingsButtonClick()">Apply settings</a></p>
-    <p><a href="#" onclick="settings.restore()">Restore to current settings</a></p>
+    <p><input type="checkbox" id="enable-rating-groups" onclick="settings.updateRatingGroupSettings()"> Enable rating groups</p><br>
+
+    <div id="rating-group-settings"></div>
+
+    <p><a href="#apply-settings" onclick="settings.onApplySettingsButtonClick()" id="apply-settings">Apply settings</a></p>
+    <p><a href="#apply-settings" onclick="settings.restore()">Restore to current settings</a></p>
 </body>
