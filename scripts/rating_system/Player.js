@@ -38,6 +38,66 @@ class Player{
     }
 
     /**
+     * @returns {[number]} The number of games until eligable for each rating group.
+     */
+    getGroupMinGames(){
+        let me=this.#data.players[this.#id];
+
+        if(me.groupMinGames===undefined)
+            me.groupMinGames=[...this.#data.config.groupMinGames];
+
+        let len=me.groupMinGames.length;
+        let correctLen=this.#data.config.groupMinGames;
+        if(len<correctLen){
+            for(let i=len; i<=correctLen; i++){
+                me.groupMinGames.push(this.#data.config.groupMinGames[i]);
+            }
+        }
+        else if(len>correctLen){
+            me.groupMinGames.splice(len, len-correctLen);
+        }
+
+        return me.groupMinGames;
+    }
+
+    /**
+     * @returns {number} An index corresponding to the player's rating group.
+     */
+    getRatingGroup(){
+        let myGroupMinGames=this.getGroupMinGames();
+        let groupMinRatings=this.#data.config.groupMinRatings;
+        let r=this.getR();
+        let group=0;
+        while(myGroupMinGames[group]<=0 && r>groupMinRatings[group]) group++;
+
+        return group;
+    }
+
+    /**
+     * @returns {number} The index of the rating group the player would be in if it weren't for the minimum game requirement.
+     */
+    getRatingGroupIgnoreMinGames(){
+        let groupMinRatings=this.#data.config.groupMinRatings;
+        let r=this.getR();
+        let group=0;
+        while(r>groupMinRatings[group]) group++;
+
+        return group;
+    }
+
+    /**
+     * @returns {{games: number, total: number}} The number of games played out of the total number of games needed in order
+     * to be eligible for the rating group that corresponds to the player's current rating.
+     */
+    getGamesUntilEligible(){
+        let me=this.#data.players[this.#id];
+        let ratingGroup=this.getRatingGroupIgnoreMinGames();
+        let total=this.#data.config.groupMinGames[ratingGroup-1];
+        let games=total-me.groupMinGames[ratingGroup-1];
+        return {games: games, total: total};
+    }
+
+    /**
      * @returns {[RatingDay]}
      */
     getRatingDays(){
@@ -137,5 +197,12 @@ class Player{
      */
     setUntilRated(untilRated){
         this.#data.players[this.#id].untilRated=untilRated;
+    }
+
+    /**
+     * @param {[number]} The number of games until the player is eligable for each rating group.
+     */
+    setGroupMinGames(groupMinGames){
+        this.#data.players[this.#id].groupMinGames = groupMinGames;
     }
 }

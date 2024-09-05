@@ -132,8 +132,8 @@ let settings=new class Settings{
                     window.alert("Error: Invalid group minimum rating.");
                     return;
                 }
-                if(minRating<=groupMinRatings[groupMinRatings.length-1]){
-                    window.alert("Error: Each group minimum rating must be larger than the previous one.");
+                if(minRating<groupMinRatings[groupMinRatings.length-1]){
+                    window.alert("Error: Each group minimum rating must be greater than or equal to the previous one.");
                     return;
                 }
                 groupMinRatings.push((minRating-meanRating)/ratingScale);
