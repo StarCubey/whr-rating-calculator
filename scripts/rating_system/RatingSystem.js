@@ -282,6 +282,9 @@ class RatingSystem{
             else if(player2.getRL()===undefined || player2.getUntilRated()!==0){
                 return -1;
             }
+            else if(index.ratingSystem.getConfig().enableRatingGroups && player1.getRatingGroup()!==player2.getRatingGroup()){
+                return player2.getRatingGroup()-player1.getRatingGroup();
+            }
             else{
                 return player2.getRL()-player1.getRL();
             }
