@@ -202,7 +202,7 @@ let settings=new class Settings{
             for(let i=1; i<this.ratingGroups.length; i++){
                 groupSettings+='<p>Group name: <input type="text" id="group-'+i+'-name" value="'+this.ratingGroups[i]+'"><br>' +
                     'Minimum rating: <input type="number" id="group-'+i+'-min-rating" value="'+this.groupMinRatings[i-1]+'"><br>' +
-                    'Minimum games until eligable: <input type="number" id="group-'+i+'-min-games" value="'+this.groupMinGames[i-1]+'"></p><br>';
+                    'Minimum games until eligible: <input type="number" id="group-'+i+'-min-games" value="'+this.groupMinGames[i-1]+'"></p><br>';
             }
 
             groupSettings+='<p><a href="#add-group" id="add-group" onclick="settings.onAddGroupClick()">Add rating group</a> ' +
