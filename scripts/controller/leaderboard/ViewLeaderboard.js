@@ -115,17 +115,41 @@ let viewLeaderboard=new class ViewLeaderboard{
 
     #showLeaderboardData(){
         let gameNumUntilRated=index.ratingSystem.getConfig().gameNumUntilRated;
+        let enableRatingGroups=index.ratingSystem.getConfig().enableRatingGroups;
+        let ratingGroups=index.ratingSystem.getConfig().ratingGroups;
         
         let lbString="";
+        let currentGroup=ratingGroups ? ratingGroups.length : -1;
         for(let playerNum=0; playerNum<this.lbPlayerCount && playerNum<this.players.length; playerNum++){
             let player=this.players[playerNum];
             
             if(playerNum!==0) lbString+="<br><br>";
 
+            if(enableRatingGroups && currentGroup>-1){
+                let playerGroup=player.getRatingGroup();
+
+                if(player.getUntilRated()!==0){
+                    currentGroup=-1;
+                    lbString+="<strong>Unrated</strong><br><br>";
+                }
+                else if(playerGroup<currentGroup){
+                    currentGroup=playerGroup;
+                    lbString+="<strong>"+ratingGroups[currentGroup]+"</strong><br><br>"
+                }
+            }
+
             if(player.getUntilRated()===0){
                 lbString+=
                     "#"+(playerNum+1)+": "+player.getName()+"<br>"+
-                    "MMR: "+Math.round(player.getRL())+"<br>"+
+                    "MMR: "+Math.round(player.getRL());
+
+                if(enableRatingGroups && player.getRatingGroupIgnoreMinGames()!==player.getRatingGroup()){
+                    let groupIgnoreString=ratingGroups[player.getRatingGroupIgnoreMinGames()];
+                    let {games, total}=player.getGamesUntilEligible();
+                    lbString+="* ("+games+"/"+total+" "+groupIgnoreString+" games)";
+                }
+
+                lbString+="<br>"+
                     "RD: "+Math.round(player.getSigmaL()*100)/100;
             }
             else{
@@ -141,17 +165,43 @@ let viewLeaderboard=new class ViewLeaderboard{
     }
 
     #updateLbCopyStrings(){
+        let enableRatingGroups=index.ratingSystem.getConfig().enableRatingGroups;
+        let ratingGroups=index.ratingSystem.getConfig().ratingGroups;
+
         this.lbCopyStrings=[""];
         let i=0;
+        let currentGroup=ratingGroups ? ratingGroups.length : -1;
         this.players.forEach((player, playerNum)=>{
             let append="";
 
-            if(playerNum!==0) append+="\n-\n";
+            //Zero width space inserted between newlines to ensure Discord doesn't remove leading whitespace.
+            if(playerNum!==0) append+="\n​\n";
+
+            if(enableRatingGroups && currentGroup>-1){
+                let playerGroup=player.getRatingGroup();
+
+                if(player.getUntilRated()!==0){
+                    currentGroup=-1;
+                    append+=ratingGroups[currentGroup]+"\n​­\n";
+                }
+                else if(playerGroup<currentGroup){
+                    currentGroup=playerGroup;
+                    append+=ratingGroups[currentGroup]+"\n​\n";
+                }
+            }
 
             if(player.getUntilRated()===0){
                 append+=
                     "#"+(playerNum+1)+": "+player.getName()+"\n"+
-                    "MMR: "+Math.round(player.getRL())+"\n"+
+                    "MMR: "+Math.round(player.getRL());
+
+                if(enableRatingGroups && player.getRatingGroupIgnoreMinGames()!==player.getRatingGroup()){
+                    let groupIgnoreString=ratingGroups[player.getRatingGroupIgnoreMinGames()];
+                    let {games, total}=player.getGamesUntilEligible();
+                    append+="* ("+games+"/"+total+" "+groupIgnoreString+" games)";
+                }
+
+                append+="\n"+
                     "RD: "+Math.round(player.getSigmaL()*100)/100;
             }
             else return;

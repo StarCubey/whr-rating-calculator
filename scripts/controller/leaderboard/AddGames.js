@@ -666,6 +666,9 @@ let addGames=new class AddGames{
      * Displays players in activePlayers
      */
     #displayActivePlayers(){
+        let enableRatingGroups=index.ratingSystem.getConfig().enableRatingGroups;
+        let ratingGroups=index.ratingSystem.getConfig().ratingGroups;
+
         this.activePlayers.sort((p1, p2)=>{
             if(p1.getRL()===undefined || p2.getRL()===undefined) return 0;
             return p2.getRL()-p1.getRL();
@@ -676,8 +679,17 @@ let addGames=new class AddGames{
         if(this.players.length===0) output="The player list is empty.";
 
         for(let i=0; i<this.activePlayers.length; i++){
-            output+=`#${i+1}: ${this.activePlayers[i].getName()} (${this.activePlayers[i].getRL().toFixed()}`+
-                `${this.activePlayers[i].getUntilRated() ? `, ${this.activePlayers[i].getUntilRated()} game(s) until rated` : ""})<br>`;
+            let player=this.activePlayers[i];
+
+            output+=`#${i+1}: ${player.getName()} (${player.getRL().toFixed()}`;
+
+            if(enableRatingGroups && player.getRatingGroupIgnoreMinGames()!==player.getRatingGroup()){
+                let groupIgnoreString=ratingGroups[player.getRatingGroupIgnoreMinGames()];
+                let {games, total}=player.getGamesUntilEligible();
+                output+="* "+games+"/"+total+" "+groupIgnoreString+" games";
+            }
+            
+            output+=`${player.getUntilRated() ? `, ${player.getUntilRated()} game(s) until rated` : ""})<br>`;
         }
 
         document.getElementById("active-list").innerHTML=output;
