@@ -68,6 +68,7 @@ let scripts=[
     "scripts/controller/leaderboard/Settings.js",
     "scripts/controller/leaderboard/ViewLeaderboard.js",
     "scripts/controller/leaderboard/ViewMatchData.js",
+    "scripts/controller/leaderboard/ViewPlayerData.js",
     "scripts/controller/CreateLeaderboard.js",
     "scripts/controller/MainMenu.js",
     "scripts/rating_system/Game.js",
@@ -75,7 +76,10 @@ let scripts=[
     "scripts/rating_system/Player.js",
     "scripts/rating_system/RatingDay.js",
     "scripts/rating_system/RatingSystem.js",
-    "scripts/rating_system/WHR.js"
+    "scripts/rating_system/WHR.js",
+    "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js",
+    "https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js",
+    "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"
 ];
 
 scripts.forEach((dir, i)=>{
