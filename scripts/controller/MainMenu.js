@@ -74,6 +74,18 @@ let mainMenu=new class MainMenu{
         xhttp.send();
     }
 
+    onViewPlayerDataButtonClick(){
+        let xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange=function(){
+            if (this.readyState==4 && this.status==200) {
+                document.documentElement.innerHTML=this.responseText;
+                viewPlayerData.initialize();
+            }
+        };
+        xhttp.open("GET", "./leaderboard/view-player-data.html", true);
+        xhttp.send();
+    }
+
     onSettingsButtonClick(){
         let xhttp=new XMLHttpRequest();
         xhttp.onreadystatechange=function(){
