@@ -5,9 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard Calculator</title>
     <link rel="stylesheet" href="styles/style.css">
+
+    <datalist id="player-list"></datalist>
 </head>
 <body>
     <p><a href="#" onclick="viewPlayerData.onBackButtonClick()">Back</a></p>
+    <div>
+        <p>
+            Player list:
+            <div id="active-list" class="scrollbox">
+                The player list is empty.
+            </div><br>
+        </p>
+        <p><input type="text" id="active-list-selection" list="player-list"><br></p>
+        <p>
+            <a id="add-active-player" href="#add-active-player" onclick="viewPlayerData.addActivePlayer()">Add</a>
+            <a id="remove-active-player" href="#remove-active-player" onclick="viewPlayerData.removeActivePlayer()">Remove</a>
+            <a id="clear-active-player" href="#clear-active-player" onclick="viewPlayerData.clearActivePlayers()">Clear</a>
+            <a id="add-all-players" href="#add-all-players" onclick="viewPlayerData.addAllPlayers()">Add all players</a>
+        </p>
+    </div>
     <canvas id="chart"></canvas>
 </body>
 </html>
