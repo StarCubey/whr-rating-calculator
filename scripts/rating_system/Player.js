@@ -57,6 +57,11 @@ class Player{
             me.groupMinGames.splice(len, len-correctLen);
         }
 
+        me.groupMinGames.forEach((minGames, i)=>{
+            if(me.groupMinGames[i]>this.#data.config.groupMinGames[i])
+                me.groupMinGames[i]=this.#data.config.groupMinGames[i];    
+        });
+
         return me.groupMinGames;
     }
 
