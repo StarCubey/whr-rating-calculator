@@ -443,7 +443,7 @@ class RatingSystem{
      * @param {Player} player 
      * @param {[[Player]]} teams
      * @returns The group difficulty of the match based on the highest
-     * rating player that the given player played against.
+     * rated player that the given player played against.
      */
     #getGroupDifficulty(player, teams){
         let highest=-Infinity;
