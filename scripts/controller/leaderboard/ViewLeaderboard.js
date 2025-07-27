@@ -167,6 +167,7 @@ let viewLeaderboard=new class ViewLeaderboard{
     #updateLbCopyStrings(){
         let enableRatingGroups=index.ratingSystem.getConfig().enableRatingGroups;
         let ratingGroups=index.ratingSystem.getConfig().ratingGroups;
+        let discordMarkdown=index.ratingSystem.getConfig().escapeDiscordMarkdown;
 
         this.lbCopyStrings=[""];
         let i=0;
@@ -182,10 +183,12 @@ let viewLeaderboard=new class ViewLeaderboard{
 
                 if(player.getUntilRated()!==0){
                     currentGroup=-1;
+                    if(discordMarkdown) append+="## ";
                     append+=ratingGroups[currentGroup]+"\n​­\n";
                 }
                 else if(playerGroup<currentGroup){
                     currentGroup=playerGroup;
+                    if(discordMarkdown) append+="## ";
                     append+=ratingGroups[currentGroup]+"\n​\n";
                 }
             }
@@ -206,7 +209,7 @@ let viewLeaderboard=new class ViewLeaderboard{
             }
             else return;
 
-            if(index.ratingSystem.getConfig().escapeDiscordMarkdown){
+            if(discordMarkdown){
                 this.escChars.forEach(escChar=>{
                     append=append.split(escChar).join("\\"+escChar);
                 });
